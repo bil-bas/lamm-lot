@@ -12,4 +12,4 @@ class LAMMLoTApp(App):
   
 
 if __name__ == "__main__":
-   LAMMLotApp.run()
+   LAMMLoTApp.run()

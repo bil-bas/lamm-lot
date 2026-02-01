@@ -48,4 +48,4 @@ class LAMMLoTApp(MDApp):
 
 
 if __name__ == "__main__":
-   LAMMLoTApp().run()
+    LAMMLoTApp().run()

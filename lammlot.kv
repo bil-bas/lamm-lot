@@ -1,15 +1,35 @@
 <LAMMLotWindow>:
     id: main_window
     rows: 3
-    spacing: 16
+    padding: 16
 
-    MDLabel:
-        text: 'Location'
+    MDBoxLayout:
+        size_hint: 0.05, None
 
-    MDDropDownItem
-        id: location_picker
-        on_release: main_window.open_location_menu(self)
+        MDLabel:
+            text: 'Location'
 
-    MDTextButton:
-        text: 'Refresh'
-        on_release: main_window.refresh_locations()
+        MDDropDownItem
+            id: location_picker
+            on_release: main_window.open_location_menu(self)
+
+        MDTextButton:
+            text: 'Refresh'
+            on_release: main_window.refresh_locations()
+
+    MDBoxLayout:
+        size_hint: 0.05, None
+
+        MDLabel:
+            text: 'Item'
+
+        MDTextField:
+
+        MDTextButton:
+            text: 'Search'
+            on_release: main_window.refresh_items()
+
+    MDScrollView:
+        MDBoxLayout:
+            id: item_list
+            orientation: 'vertical'

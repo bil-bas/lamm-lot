@@ -1,15 +1,52 @@
-from kivy.app import App
-from kivy.uix.widget import Widget
+#!/usr/bin/env python
 
 
-class LAMMLoTWindow(Widget):
-    pass
+from kivymd.app import MDApp
+from kivymd.uix.gridlayout import MDGridLayout
+from kivymd.uix.button import MDTextButton
+from kivymd.uix.dropdownitem import MDDropDownItem
+from kivymd.uix.menu import MDDropdownMenu
+from kivymd.uix.label import MDLabel
+from kivymd.uix.widget import MDWidget
+from kivymd.toast import toast
 
 
-class LAMMLoTApp(App):
+class LAMMLoTApp(MDApp):
+    def refresh_locations(self, widget: MDWidget = None):
+        self._locations = [
+            {
+                "text": location,
+                "on_release": lambda x=location: self.callback_location_menu(x),
+            } for location in ["Lancaster Community Makerspace", "Lancaster BID", "Good Things Collective"]
+        ]
+
+    def open_location_menu(self, item: MDDropDownItem):
+        if not self._locations:
+            self.refresh_locations()
+
+        # This should be left-aligned from the button, but no idea how to do that right now!
+        self._location_menu = MDDropdownMenu(caller=item, items=self._locations,
+                                             pos_hint={"center_x": 0.5})
+        self._location_menu.open()
+
+    def callback_location_menu(self, text_item: str):
+        self._location_menu.dismiss()
+        toast(f"Changed location to {text_item}")
+        self.root.ids.location_picker.text = text_item
+
     def build(self):
-        return LAMMLoTWindow()
-  
+        self._locations: list[dict] = []
+
+        self.theme_cls.theme_style = "Dark"
+        self.theme_cls.primary_palette = "Blue"
+
+        return MDGridLayout(
+            MDLabel(text="Location"),
+            MDDropDownItem(id="location_picker", on_release=self.open_location_menu),
+            MDTextButton(text="Refresh", on_release=self.refresh_locations),
+            cols=3,
+        )
+
 
 if __name__ == "__main__":
-   LAMMLoTApp.run()
+   LAMMLoTApp().run()

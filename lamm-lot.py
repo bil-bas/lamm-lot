@@ -3,18 +3,18 @@
 
 from kivymd.app import MDApp
 from kivymd.uix.gridlayout import MDGridLayout
-from kivymd.uix.button import MDTextButton
 from kivymd.uix.dropdownitem import MDDropDownItem
 from kivymd.uix.menu import MDDropdownMenu
-from kivymd.uix.label import MDLabel
 from kivymd.uix.widget import MDWidget
 from kivymd.toast import toast
+
 
 class LAMMLotWindow(MDGridLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
         self._locations: list[dict] = []
+        self.ids.location_picker.text = "Lancaster Community Makerspace"
 
     def refresh_locations(self, widget: MDWidget = None):
         self._locations = [

@@ -1,13 +1,13 @@
 <LAMMLotWindow>:
     id: main_window
     rows: 3
+    spacing: 16
 
     MDLabel:
         text: 'Location'
 
     MDDropDownItem
         id: location_picker
-        text: 'Lancaster Community Makerspace'
         on_release: main_window.open_location_menu(self)
 
     MDTextButton:

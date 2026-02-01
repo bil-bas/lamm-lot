@@ -10,8 +10,12 @@ from kivymd.uix.label import MDLabel
 from kivymd.uix.widget import MDWidget
 from kivymd.toast import toast
 
+class LAMMLotWindow(MDGridLayout):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
-class LAMMLoTApp(MDApp):
+        self._locations: list[dict] = []
+
     def refresh_locations(self, widget: MDWidget = None):
         self._locations = [
             {
@@ -32,20 +36,15 @@ class LAMMLoTApp(MDApp):
     def callback_location_menu(self, text_item: str):
         self._location_menu.dismiss()
         toast(f"Changed location to {text_item}")
-        self.root.ids.location_picker.text = text_item
+        self.ids.location_picker.text = text_item
 
+
+class LAMMLoTApp(MDApp):
     def build(self):
-        self._locations: list[dict] = []
-
         self.theme_cls.theme_style = "Dark"
         self.theme_cls.primary_palette = "Blue"
 
-        return MDGridLayout(
-            MDLabel(text="Location"),
-            MDDropDownItem(id="location_picker", on_release=self.open_location_menu),
-            MDTextButton(text="Refresh", on_release=self.refresh_locations),
-            cols=3,
-        )
+        return LAMMLotWindow()
 
 
 if __name__ == "__main__":

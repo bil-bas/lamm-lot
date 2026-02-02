@@ -1,7 +1,7 @@
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.dropdownitem import MDDropDownItem
 from kivymd.uix.menu import MDDropdownMenu
-from kivymd.uix.list import ThreeLineIconListItem
+from kivymd.uix.list import ThreeLineIconListItem, IconLeftWidgetWithoutTouch
 from kivymd.toast import toast
 
 from .lend_engine_client import LendEngineClient
@@ -33,13 +33,15 @@ class MainWindow(MDBoxLayout):
         items_list.clear_widgets()
 
         for item in items:
-            items_list.add_widget(
-                ThreeLineIconListItem(
-                    text=f"{item["sku"]} - {item["name"]["en"]}",
-                    secondary_text=item["description"]["en"] or "",
-                    tertiary_text=f"£{item["loanFee"]} per week",
-                )
+            item_widget = ThreeLineIconListItem(
+                text=f"{item["sku"]} - {item["name"]["en"]}",
+                secondary_text=item["description"]["en"] or "",
+                tertiary_text=f"£{item["loanFee"]} per week",
             )
+            if "image" in item:
+                item_widget.add_widget(IconLeftWidgetWithoutTouch(icon=item["image"], width=100))
+
+            items_list.add_widget(item_widget)
 
     def site_data(self):
         if not self._sites:

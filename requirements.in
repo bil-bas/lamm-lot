@@ -1,2 +1,6 @@
 requests
 kivymd[base]
+pyinstaller
+cython
+pexpect
+python-for-android

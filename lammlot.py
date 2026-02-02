@@ -6,6 +6,7 @@ from kivymd.uix.gridlayout import MDGridLayout
 from kivymd.uix.dropdownitem import MDDropDownItem
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.label import MDLabel
+from kivymd.uix.list import ThreeLineIconListItem
 from kivymd.toast import toast
 
 
@@ -27,12 +28,10 @@ class LAMMLotWindow(MDGridLayout):
     def refresh_items(self):
         self._items = [
             {
-                "text": "fish",
-
-            },
-            {
-                "text": "cheese",
-            }
+                "text": f"fish {i + 1}",
+                "secondary_text": "Something",
+                "tertiary_text": "£2/week",
+            } for i in range(20)
         ]
 
         items = self.ids.item_list
@@ -40,7 +39,7 @@ class LAMMLotWindow(MDGridLayout):
         items.clear_widgets()
 
         for item in self._items:
-            items.add_widget(MDLabel(text=item["text"]))
+            items.add_widget(ThreeLineIconListItem(**item))
 
     def location_data(self):
         if not self._locations:

@@ -5,6 +5,7 @@
 
     MDBoxLayout:
         size_hint: 0.05, None
+        spacing: 16
 
         MDLabel:
             text: 'Location'
@@ -19,6 +20,7 @@
 
     MDBoxLayout:
         size_hint: 0.05, None
+        spacing: 16
 
         MDLabel:
             text: 'Item'
@@ -30,6 +32,5 @@
             on_release: main_window.refresh_items()
 
     MDScrollView:
-        MDBoxLayout:
+        MDList:
             id: item_list
-            orientation: 'vertical'

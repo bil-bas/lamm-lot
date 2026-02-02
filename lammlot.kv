@@ -1,10 +1,11 @@
-<LAMMLotWindow>:
+<MainWindow>:
     id: main_window
-    rows: 3
+    cols: 1
     padding: 16
+    orientation: 'vertical'
 
     MDBoxLayout:
-        size_hint: 0.05, None
+        size_hint: 1, 0.05
         spacing: 16
 
         MDLabel:
@@ -19,13 +20,14 @@
             on_release: main_window.refresh_locations()
 
     MDBoxLayout:
-        size_hint: 0.05, None
+        size_hint: 1, 0.05
         spacing: 16
 
         MDLabel:
             text: 'Item'
 
         MDTextField:
+            id: search
 
         MDTextButton:
             text: 'Search'

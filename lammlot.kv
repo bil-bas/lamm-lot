@@ -2,6 +2,7 @@
     id: main_window
     cols: 1
     padding: 16
+    spacing: 60
     orientation: 'vertical'
 
     MDBoxLayout:
@@ -12,12 +13,12 @@
             text: 'Location'
 
         MDDropDownItem
-            id: location_picker
-            on_release: main_window.open_location_menu(self)
+            id: site_picker
+            on_release: main_window.open_site_menu(self)
 
         MDTextButton:
             text: 'Refresh'
-            on_release: main_window.refresh_locations()
+            on_release: main_window.refresh_sites()
 
     MDBoxLayout:
         size_hint: 1, 0.05

@@ -1,5 +1,5 @@
 requests
-kivymd[base]
+kivy[base]
 pyinstaller
 cython
 pexpect

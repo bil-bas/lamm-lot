@@ -1,3 +1,12 @@
+<SearchResult>:
+    canvas.before:
+        Color:
+            rgba: (0.0, 0.9, 0.1, 0.3) if self.selected else (0, 0, 0, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+
 <MainWindow>:
     id: main_window
     cols: 1
@@ -5,35 +14,41 @@
     spacing: 60
     orientation: 'vertical'
 
-    MDBoxLayout:
+    BoxLayout:
         size_hint: 1, 0.05
         spacing: 16
 
-        MDLabel:
+        Label:
             text: 'Location'
 
-        MDDropDownItem
+        DropDown
             id: site_picker
-            on_release: main_window.open_site_menu(self)
+            #on_release: main_window.open_site_menu(self)
 
-        MDTextButton:
-            text: 'Refresh'
-            on_release: main_window.refresh_sites()
+        Label:
+            text: ''
 
-    MDBoxLayout:
+    BoxLayout:
         size_hint: 1, 0.05
         spacing: 16
 
-        MDLabel:
-            text: 'Item'
+        Label:
+            text: 'item'
 
-        MDTextField:
+        TextInput:
             id: search
 
-        MDTextButton:
+        Button:
             text: 'Search'
-            on_release: main_window.refresh_items()
+            #on_press: main_window.refresh_items()
 
-    MDScrollView:
-        MDList:
+    SearchResults:
+        view_class: 'SearchResult'
+        SelectableRecycleBoxLayout:
             id: item_list
+            orientation: 'vertical'
+            size_hint_y: None
+            multiselect: True
+            touch_multiselect: True
+
+

@@ -21,6 +21,7 @@ class SearchResult(RecycleViewBehavior, BoxLayout):
     title_ = StringProperty()
     description_ = StringProperty()
     loan_fee_ = StringProperty()
+    image_ = StringProperty()
 
     def on_touch_down(self, touch):
         if super().on_touch_down(touch):

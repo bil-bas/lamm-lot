@@ -8,13 +8,16 @@
             pos: self.pos
             size: self.size
 
-    #Image:
-    #    id: image
-    #    fit_mode: "scale-down"
-    #    #size: dp(64), dp(64)
+    Image:
+        id: image
+        fit_mode: "scale-down"
+        size: 64, 64
+        size_hint: None, None
+        source: root.image_
 
     BoxLayout:
         orientation: 'vertical'
+
         Label:
             markup: True
             text_size: self.size
@@ -39,44 +42,39 @@
     spacing: 60
     orientation: 'vertical'
 
-    BoxLayout:
-        orientation: 'horizontal'
+    StackLayout:
         size_hint: 1, 0.05
         spacing: 16
-
-        Label:
-            text: 'Library Location'
-            text_size: self.size
-            halign: 'right'
 
         Button:
             id: site_picker
             on_release: main_window.open_site_menu(self)
-
-    BoxLayout:
-        orientation: 'horizontal'
-        size_hint: 1, 0.05
-        spacing: 16
-
-        Label:
-            text: 'Title'
-            text_size: self.size
-            halign: 'right'
-
-        TextInput:
-            id: name_search
+            size_hint_x: None
+            width: 400
 
         Label:
             text: 'SKU'
             text_size: self.size
             halign: 'right'
+            size_hint_x: None
 
         TextInput:
             id: sku_search
+            size_hint_x: None
+
+        Label:
+            text: 'Title'
+            halign: 'right'
+            size_hint_x: None
+
+        TextInput:
+            id: name_search
+            size_hint_x: None
 
         Button:
             text: 'Search'
             on_press: main_window.refresh_items()
+            size_hint_x: None
 
     SearchResults:
         id: item_list

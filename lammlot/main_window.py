@@ -31,6 +31,7 @@ class MainWindow(BoxLayout):
                                          sku=self.ids["sku_search"].text)
 
         for item in items:
+            item["image_"] = item["image"] if "image" in item else ""
             item["title_"] = f"[b]{item["sku"]}[/b] - {item["name"]["en"]}"
             item["description_"] = item["description"]["en"] or ""
             item["loan_fee_"] = f"£{item["loanFee"]} per week"

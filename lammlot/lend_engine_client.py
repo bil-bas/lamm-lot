@@ -26,14 +26,15 @@ class LendEngineClient:
         sites = self._get_list("sites")["hydra:member"]
         return [site for site in sites if site["isActive"]]
 
-    def fetch_items(self, site: str, query: str) -> list[dict]:
-        items = self._get_list("items", params={})["hydra:member"]
+    def fetch_items(self, site: str, name: str, sku: str) -> list[dict]:
+        items = self._get_list("items", params={"name": name, "sku": sku})["hydra:member"]
 
         for item in items:
             if item["imageName"]:
                 item["image"] = self._fetch_image(item["imageName"])
 
-        return [item for item in items if item["isActive"] and item["itemType"] == "loan" and site in item["sites"]]
+        return [item for item in items
+                if item["isActive"] and item["itemType"] == "loan" and site in item["sites"]]
 
     def _fetch_image(self, filename: str) -> str:
         try:

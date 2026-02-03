@@ -2,9 +2,10 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.dropdown import DropDown
 from kivy.uix.label import Label
 from kivy.uix.image import Image
+from kivy.uix.button import Button
 
 from .lend_engine_client import LendEngineClient
-from .search_results import SearchResult
+from .search_results import SearchResults
 
 
 class MainWindow(BoxLayout):
@@ -16,58 +17,45 @@ class MainWindow(BoxLayout):
 
         self._client = LendEngineClient()
 
-        self.refresh_sites()
+        self.fetch_sites()
+        self.refresh_items()
+
+    def fetch_sites(self) -> None:
+        self._sites = self._client.fetch_sites()
         self._current_site = self._sites[0]  # TODO: read from settings file.
         self.ids["site_picker"].text = self._current_site["name"]
 
-        self.refresh_items()
+    def refresh_items(self) -> None:
+        items = self._client.fetch_items(site=self._current_site["@id"],
+                                         name=self.ids["name_search"].text,
+                                         sku=self.ids["sku_search"].text)
 
-    def refresh_sites(self):
-        self._sites = self._client.fetch_sites()
-
-    def refresh_items(self):
-        return
-
-        items = self._client.fetch_items(site=self._current_site["@id"], query=self.ids["search"].text)
+        for item in items:
+            item["title_"] = f"[b]{item["sku"]}[/b] - {item["name"]["en"]}"
+            item["description_"] = item["description"]["en"] or ""
+            item["loan_fee_"] = f"£{item["loanFee"]} per week"
 
         self.ids["item_list"].data = items
 
-        for item in items:
-            result = SearchResult(text=item["sku"])
-            result.sku = item["sku"]
+    def open_site_menu(self, widget: Button) -> None:
+        drop_down = DropDown()
 
-            text = BoxLayout(orientation="vertical")
-            result.add_widget(text)
+        for site in self._sites:
+            button = Button(text=site["name"], size_hint_y=None, height=50)
+            button.bind(on_release=lambda b: self.callback_site_menu(b, drop_down))
+            drop_down.add_widget(button)
 
-            text.add_widget(Label(text=f"[b]{item["sku"]}[/b] - {item["name"]["en"]}", markup=True))
-            text.add_widget(Label(text=(item["description"]["en"] or "")[:80]))
-            text.add_widget(Label(text=f"£{item["loanFee"]} per week"))
+        drop_down.open(widget)
 
-            if "image" in item:
-                result.add_widget(Image(source=item["image"]))
-
-            result.bind(on_press=lambda btn: print(btn.sku))
-
-            item_list.add_widget(result)
-
-    def site_data(self):
-        if not self._sites:
-            self.refresh_sites()
-
-        return [
-            {
-                "text": f"{site["name"]}",
-                "on_release": lambda x=f"{i}": self.callback_site_menu(x),
-            } for i, site in enumerate(self._sites)
-        ]
-
-    def open_site_menu(self, item: any):
-        self._site_menu = DropDown(caller=item, items=self.site_data(), width=500)
-        self._site_menu.open()
-
-    def callback_site_menu(self, item_index: str):
-        self._site_menu.dismiss()
-        self._current_site = self._sites[int(item_index)]
-        self.ids["site_picker"].text = self._current_site["name"]
-
+    def callback_site_menu(self, button: Button, drop_down: DropDown) -> None:
+        drop_down.dismiss()
+        self._current_site = self.find_site(button.text)
+        self.ids["site_picker"].text = button.text
         self.refresh_items()
+
+    def find_site(self, name: str):
+        for site in self._sites:
+            if site["name"] == name:
+                return site
+
+        raise RuntimeError("Site not found")

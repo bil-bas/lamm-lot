@@ -1,10 +1,35 @@
 <SearchResult>:
+    orientation: 'horizontal'
+
     canvas.before:
         Color:
             rgba: (0.0, 0.9, 0.1, 0.3) if self.selected else (0, 0, 0, 1)
         Rectangle:
             pos: self.pos
             size: self.size
+
+    #Image:
+    #    id: image
+    #    fit_mode: "scale-down"
+    #    #size: dp(64), dp(64)
+
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            markup: True
+            text_size: self.size
+            halign: 'left'
+            text: root.title_
+        Label:
+            markup: True
+            text_size: self.size
+            halign: 'left'
+            text: root.description_
+        Label:
+            text_size: self.size
+            text: "£0.00 per week"
+            halign: 'right'
+            text: root.loan_fee_
 
 
 <MainWindow>:
@@ -15,39 +40,53 @@
     orientation: 'vertical'
 
     BoxLayout:
+        orientation: 'horizontal'
         size_hint: 1, 0.05
         spacing: 16
 
         Label:
-            text: 'Location'
+            text: 'Library Location'
+            text_size: self.size
+            halign: 'right'
 
-        DropDown
+        Button:
             id: site_picker
-            #on_release: main_window.open_site_menu(self)
-
-        Label:
-            text: ''
+            on_release: main_window.open_site_menu(self)
 
     BoxLayout:
+        orientation: 'horizontal'
         size_hint: 1, 0.05
         spacing: 16
 
         Label:
-            text: 'item'
+            text: 'Title'
+            text_size: self.size
+            halign: 'right'
 
         TextInput:
-            id: search
+            id: name_search
+
+        Label:
+            text: 'SKU'
+            text_size: self.size
+            halign: 'right'
+
+        TextInput:
+            id: sku_search
 
         Button:
             text: 'Search'
-            #on_press: main_window.refresh_items()
+            on_press: main_window.refresh_items()
 
     SearchResults:
-        view_class: 'SearchResult'
+        id: item_list
+        viewclass: 'SearchResult'
         SelectableRecycleBoxLayout:
-            id: item_list
-            orientation: 'vertical'
+            default_size: None, dp(56)
+            default_size_hint: 1, None
             size_hint_y: None
+            height: self.minimum_height
+            orientation: 'vertical'
             multiselect: True
             touch_multiselect: True
 

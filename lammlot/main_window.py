@@ -1,11 +1,13 @@
+from io import BytesIO
+
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.dropdown import DropDown
-from kivy.uix.label import Label
-from kivy.uix.image import Image
 from kivy.uix.button import Button
+from kivy.uix.image import Image, CoreImage
 
 from .lend_engine_client import LendEngineClient
-from .search_results import SearchResults
+from .sticker_generator import StickerGenerator
+from . import search_results
 
 
 class MainWindow(BoxLayout):
@@ -13,7 +15,6 @@ class MainWindow(BoxLayout):
         super().__init__(**kwargs)
 
         self._sites: list[str] = []
-        self._item_data: list[dict] = []
 
         self._client = LendEngineClient()
 
@@ -30,7 +31,8 @@ class MainWindow(BoxLayout):
                                          name=self.ids["name_search"].text,
                                          sku=self.ids["sku_search"].text)
 
-        for item in items:
+        for i, item in enumerate(items):
+            item["index"] = i
             item["image_"] = item["image"] if "image" in item else ""
             item["title_"] = f"[b]{item["sku"]}[/b] - {item["name"]["en"]}"
             item["description_"] = item["description"]["en"] or ""
@@ -54,9 +56,23 @@ class MainWindow(BoxLayout):
         self.ids["site_picker"].text = button.text
         self.refresh_items()
 
-    def find_site(self, name: str):
+    def find_site(self, name: str) -> None:
         for site in self._sites:
             if site["name"] == name:
                 return site
 
         raise RuntimeError("Site not found")
+
+    def on_generate(self, is_single: bool) -> None:
+        if is_single:
+            data = StickerGenerator(item=self.ids["item_list"].data[0],
+                                         site=self._sites[0]).generate()
+        else:
+            pass
+
+        tex = CoreImage(BytesIO(data.read()), ext="png")
+        image = Image()
+        image.texture = tex.texture
+
+        self.add_widget(image)
+

@@ -4,3 +4,4 @@ pyinstaller
 cython
 pexpect
 python-for-android
+python-barcode

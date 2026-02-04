@@ -11,12 +11,13 @@
     Image:
         id: image
         fit_mode: "scale-down"
-        size: 64, 64
+        size: 80, 80
         size_hint: None, None
         source: root.image_
 
     BoxLayout:
         orientation: 'vertical'
+        padding: 8
 
         Label:
             markup: True
@@ -37,8 +38,7 @@
 
 <MainWindow>:
     id: main_window
-    cols: 1
-    padding: 16
+    padding: 32
     spacing: 60
     orientation: 'vertical'
 
@@ -87,5 +87,35 @@
             orientation: 'vertical'
             multiselect: True
             touch_multiselect: True
+
+    StackLayout:
+        size_hint: 1, 0.05
+        spacing: 16
+
+        Label:
+            text: "Sticker"
+            size_hint_x: None
+
+        ToggleButton:
+            id: single_sticker
+            text: "Single"
+            group: "sicker_option"
+            size_hint_x: None
+            state: 'down'
+
+        ToggleButton:
+            text: "Sheet"
+            group: "sicker_option"
+            size_hint_x: None
+
+        Button:
+            size_hint_x: None
+            text: 'Generate'
+            on_press: main_window.on_generate(is_single=single_sticker.state == "down")
+
+
+
+
+
 
 

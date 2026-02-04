@@ -11,9 +11,6 @@ from lammlot.main_window import MainWindow
 
 class LAMMLoTApp(App):
     def build(self):
-        #self.theme_cls.theme_style = "Dark"
-        #self.theme_cls.primary_palette = "Blue"
-
         return MainWindow()
 
 

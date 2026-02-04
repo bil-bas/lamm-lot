@@ -9,9 +9,9 @@ from .utils import mm_to_px
 
 
 class StickerGenerator:
-    SMALL_SIZE = mm_to_px(50), mm_to_px(30)
-    LARGE_SIZE = mm_to_px(80), mm_to_px(50)
-    SHEET_SIZE = mm_to_px(75), mm_to_px(42)
+    SIZE_SMALL = mm_to_px(50), mm_to_px(30)
+    SIZE_LARGE = mm_to_px(80), mm_to_px(50)
+    SIZE_SHEET = mm_to_px(75), mm_to_px(42)
     TEXT_COLOR = 0, 0, 0
     MARGIN = mm_to_px(2)
 
@@ -19,7 +19,7 @@ class StickerGenerator:
         self._item = item
         self._site = site
 
-    def generate(self, size: tuple[int, int] = LARGE_SIZE) -> BytesIO:
+    def generate(self, size: tuple[int, int]) -> BytesIO:
         image = Image.new(mode="RGB", size=size, color=(255, 255, 255))
 
         self._draw_picture(image)
@@ -32,21 +32,35 @@ class StickerGenerator:
 
         return data
 
-    def _draw_picture(self, image: Image) -> None:
+    def _draw_picture(self, image: Image, greyscale: bool = True) -> None:
         picture = Image.open(self._item["image_"])
-        size = image.height - mm_to_px(12)
+        size = image.height - mm_to_px(16)
         picture = picture.resize((size, size), resample=Image.Resampling.LANCZOS)
-        image.paste(picture, (self.MARGIN, self.MARGIN,
-                              self.MARGIN + picture.width, self.MARGIN + picture.height))
+
+        if greyscale:
+            picture = picture.convert("L")
+
+        top_margin = (image.height - picture.height) // 2
+        image.paste(picture, (self.MARGIN, top_margin,
+                              self.MARGIN + picture.width, top_margin + picture.height))
 
     def _draw_text(self, image: Image) -> None:
-        font_title = ImageFont.truetype(f"arial.ttf", size=70)
-        font_subtitle = ImageFont.truetype(f"arial.ttf", size=50)
+        font_size_large = image.height / 16
+        font_size_small = image.height / 18
+
+        font_title = ImageFont.truetype(f"arial.ttf", size=font_size_large)
+        font_subtitle = ImageFont.truetype(f"arial.ttf", size=font_size_small)
 
         draw = ImageDraw.Draw(image)
-        draw.text((self.MARGIN, image.height - 70 - 50 - self.MARGIN),
+
+        # Top Text
+        draw.text((self.MARGIN, self.MARGIN),
+                   self._item["name"]["en"], self.TEXT_COLOR, font_title)
+
+        # Bottom text
+        draw.text((self.MARGIN, image.height - font_size_large - font_size_small - self.MARGIN),
                    self._site["name"], self.TEXT_COLOR, font_title)
-        draw.text((self.MARGIN, image.height - 50 - self.MARGIN),
+        draw.text((self.MARGIN, image.height - font_size_small - self.MARGIN),
                   "Part of BayShare - bayshare.org.uk", self.TEXT_COLOR, font_subtitle)
 
     def _draw_barcode(self, image: Image) -> None:

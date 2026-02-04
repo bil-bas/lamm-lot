@@ -7,6 +7,7 @@ from kivy.uix.image import Image, CoreImage
 
 from .lend_engine_client import LendEngineClient
 from .sticker_generator import StickerGenerator
+from .utils import print_to_screen
 from . import search_results
 
 
@@ -65,14 +66,16 @@ class MainWindow(BoxLayout):
 
     def on_generate(self, is_single: bool) -> None:
         if is_single:
-            data = StickerGenerator(item=self.ids["item_list"].data[0],
-                                         site=self._sites[0]).generate()
-        else:
-            pass
+            generator = StickerGenerator(item=self.ids["item_list"].data[0],
+                                         site=self._sites[0])
+            for size in StickerGenerator.SIZE_LARGE, StickerGenerator.SIZE_SMALL:
+                data = generator.generate(size)
 
-        tex = CoreImage(BytesIO(data.read()), ext="png")
-        image = Image()
-        image.texture = tex.texture
+                tex = CoreImage(BytesIO(data.read()), ext="png")
+                image = Image()
+                image.texture = tex.texture
+                image.size_hint = None, None
+                image.size = print_to_screen(size[0]) * 2, print_to_screen(size[1]) * 2
 
-        self.add_widget(image)
+                self.add_widget(image)
 

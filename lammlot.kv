@@ -103,6 +103,7 @@
                 text: "Small"
                 group: "sticker_option"
                 size_hint_x: None
+                on_press: search_screen.set_sticker_type(self, "small")
 
             ToggleButton:
                 id: large_sticker
@@ -110,17 +111,21 @@
                 group: "sticker_option"
                 size_hint_x: None
                 state: 'down'
+                on_press: search_screen.set_sticker_type(self, "large")
 
             ToggleButton:
                 id: sticker_sheet
                 text: "Sheet"
                 group: "sticker_option"
                 size_hint_x: None
+                on_press: search_screen.set_sticker_type(self, "sheet")
 
             Button:
+                id: generate_button
                 size_hint_x: None
                 text: 'Generate'
                 on_press: search_screen.on_generate()
+                disabled: True
 
 
 <StickerScreen>:

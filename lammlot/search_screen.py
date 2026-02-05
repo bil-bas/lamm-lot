@@ -2,21 +2,33 @@ from kivy.clock import Clock
 from kivy.uix.screenmanager import Screen
 from kivy.uix.dropdown import DropDown
 from kivy.uix.button import Button
+from kivy.uix.togglebutton import ToggleButton
 
 from .lend_engine_client import LendEngineClient
-from . import search_results
+from lammlot.search_results import SearchResult, SearchResults
 
 
 class SearchScreen(Screen):
+    @property
+    def selected_items(self) -> list[SearchResult]:
+        results: SearchResults = self.ids["item_list"]
+
+        return [self._items[c.index] for c in results.children[0].children if c.selected]
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
+        self._sticker_type = "large"
         self._sites: list[str] = []
         self._site = None
         self._items: list[dict] = []
         self._api_client = LendEngineClient()
 
         Clock.schedule_once(self.fetch_sites, 0.25)
+
+    def set_sticker_type(self, button: ToggleButton, value: str) -> bool:
+        # TODO: prevent button being toggled off.
+        self._sticker_type = value
 
     def fetch_sites(self, called_after: float = 0) -> None:
         self._sites = self._api_client.fetch_sites()
@@ -34,8 +46,10 @@ class SearchScreen(Screen):
             item["title_"] = f"[b]{item["sku"]}[/b] - {item["name"]["en"]}"
             item["description_"] = item["description"]["en"] or ""
             item["loan_fee_"] = f"£{item["loanFee"]} per week"
+            item["screen"] = self
 
         self.ids["item_list"].data = self._items
+        self.ids["generate_button"].disabled = True
 
     def open_site_menu(self, widget: Button) -> None:
         drop_down = DropDown()
@@ -61,8 +75,17 @@ class SearchScreen(Screen):
         raise RuntimeError("Site not found")
 
     def on_generate(self) -> None:
-        self.manager.get_screen('sticker').selected = self._items
-        self.manager.get_screen('sticker').site = self._site
+        if self._sticker_type == "sheet":
+            screen = self.manager.get_screen("sheet")
+        else:
+            screen = self.manager.get_screen("sticker")
+            screen.sticker_type = self._sticker_type
 
-        self.manager.current = 'sticker'
+        screen.selected = self.selected_items
+        screen.site = self._site
+
+        self.manager.current = "sheet" if self._sticker_type == "sheet" else "sticker"
+
+    def update_selected(self) -> None:
+        self.ids["generate_button"].disabled = not self.selected_items
 

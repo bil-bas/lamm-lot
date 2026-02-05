@@ -12,6 +12,7 @@ from lammlot.sticker_screen import StickerScreen
 from lammlot.search_screen import SearchScreen
 from lammlot.sheet_screen import SheetScreen
 
+
 class LAMMLoTApp(App):
     def build(self):
         sm = ScreenManager(transition=NoTransition())

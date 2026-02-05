@@ -3,15 +3,16 @@ from io import BytesIO
 from kivy.uix.layout import Layout
 from kivy.uix.screenmanager import Screen
 from kivy.uix.image import Image, CoreImage
-from kivy.properties import ListProperty, DictProperty
+from kivy.properties import ListProperty, DictProperty, StringProperty
 
 from .sticker_generator import StickerGenerator
 from .utils import print_to_screen
 
 
 class StickerScreen(Screen):
-    selected = ListProperty(["nothing"])
+    selected = ListProperty()
     site = DictProperty()
+    sticker_type = StringProperty()
 
     def on_enter(self, **kwargs) -> None:
         stickers: Layout = self.ids["stickers"]
@@ -21,8 +22,12 @@ class StickerScreen(Screen):
         for item in self.selected:
             generator = StickerGenerator(item=item, site=self.site)
 
-            for size in StickerGenerator.SIZE_LARGE, StickerGenerator.SIZE_SMALL:
-                self._add_sticker(stickers, generator, size)
+            if self.sticker_type == "small":
+                size = StickerGenerator.SIZE_SMALL
+            else:
+                size = StickerGenerator.SIZE_LARGE
+
+            self._add_sticker(stickers, generator, size)
 
     def _add_sticker(self, stickers: Layout, generator: StickerGenerator, size: list[int, int]) -> None:
         data = generator.generate(size)

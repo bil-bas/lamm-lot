@@ -1,4 +1,4 @@
-from kivy.properties import BooleanProperty, StringProperty, NumericProperty
+from kivy.properties import BooleanProperty, StringProperty, NumericProperty, ObjectProperty
 from kivy.uix.recycleboxlayout import RecycleBoxLayout
 from kivy.uix.recycleview import RecycleView
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
@@ -25,6 +25,7 @@ class SearchResult(RecycleDataViewBehavior, BoxLayout):
     loan_fee_ = StringProperty()
     image_ = StringProperty()
 
+    screen = ObjectProperty()
 
     def on_touch_down(self, touch):
         ''' Add selection on touch down '''
@@ -38,3 +39,6 @@ class SearchResult(RecycleDataViewBehavior, BoxLayout):
     def apply_selection(self, results, index, is_selected):
         ''' Respond to the selection of items in the view. '''
         self.selected = is_selected
+
+        self.screen.update_selected()
+

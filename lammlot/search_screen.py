@@ -44,7 +44,7 @@ class SearchScreen(Screen):
             item["index"] = i
             item["image_"] = item["image"] if "image" in item else ""
 
-             # flake8 doesn't like aquare brackets in a string and inside the replacement braces.
+            # flake8 doesn't like aquare brackets in a string and inside the replacement braces.
             sku, name = item["sku"], item["name"]["en"]
             item["title_"] = f"[b]{sku}[/b] - {name}"
 

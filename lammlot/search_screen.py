@@ -43,7 +43,8 @@ class SearchScreen(Screen):
         for i, item in enumerate(self._items):
             item["index"] = i
             item["image_"] = item["image"] if "image" in item else ""
-            item["title_"] = f"[b]{item["sku"]}[/b] - {item["name"]["en"]}"
+            sku = item["sku"] # f string doesn't enjoy having square brackets nested (flake8).
+            item["title_"] = f"[b]{sku}[/b] - {item["name"]["en"]}"
             item["description_"] = item["description"]["en"] or ""
             item["loan_fee_"] = f"£{item["loanFee"]} per week"
             item["screen"] = self

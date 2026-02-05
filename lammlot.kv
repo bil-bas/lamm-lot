@@ -35,86 +35,120 @@
             halign: 'right'
             text: root.loan_fee_
 
-
-<MainWindow>:
-    id: main_window
+<SearchScreen>:
+    id: search_screen
+    name: 'search'
     padding: 32
     spacing: 60
-    orientation: 'vertical'
 
-    StackLayout:
-        size_hint: 1, 0.05
-        spacing: 16
+    BoxLayout:
+        orientation: 'vertical'
 
-        Button:
-            id: site_picker
-            on_release: main_window.open_site_menu(self)
-            size_hint_x: None
-            width: 400
+        StackLayout:
+            size_hint: 1, 0.05
+            spacing: 16
 
-        Label:
-            text: 'SKU'
-            text_size: self.size
-            halign: 'right'
-            size_hint_x: None
+            Button:
+                id: site_picker
+                on_release: search_screen.open_site_menu(self)
+                size_hint_x: None
+                width: 400
 
-        TextInput:
-            id: sku_search
-            size_hint_x: None
+            Label:
+                text: 'SKU'
+                text_size: self.size
+                halign: 'right'
+                size_hint_x: None
 
-        Label:
-            text: 'Title'
-            halign: 'right'
-            size_hint_x: None
+            TextInput:
+                id: sku_search
+                size_hint_x: None
 
-        TextInput:
-            id: name_search
-            size_hint_x: None
+            Label:
+                text: 'Title'
+                halign: 'right'
+                size_hint_x: None
 
-        Button:
-            text: 'Search'
-            on_press: main_window.refresh_items()
-            size_hint_x: None
+            TextInput:
+                id: name_search
+                size_hint_x: None
 
-    SearchResults:
-        id: item_list
-        viewclass: 'SearchResult'
-        SelectableRecycleBoxLayout:
-            default_size: None, dp(56)
-            default_size_hint: 1, None
-            size_hint_y: None
-            height: self.minimum_height
-            orientation: 'vertical'
-            multiselect: True
-            touch_multiselect: True
+            Button:
+                text: 'Search'
+                on_press: search_screen.refresh_items()
+                size_hint_x: None
 
-    StackLayout:
-        size_hint: 1, 0.05
-        spacing: 16
+        SearchResults:
+            id: item_list
+            viewclass: 'SearchResult'
+            SelectableRecycleBoxLayout:
+                default_size: None, dp(56)
+                default_size_hint: 1, None
+                size_hint_y: None
+                height: self.minimum_height
+                orientation: 'vertical'
+                multiselect: True
+                touch_multiselect: True
 
-        Label:
-            text: "Sticker"
-            size_hint_x: None
+        StackLayout:
+            size_hint: 1, 0.05
+            spacing: 16
 
-        ToggleButton:
-            id: single_sticker
-            text: "Single"
-            group: "sicker_option"
-            size_hint_x: None
-            state: 'down'
+            Label:
+                text: "Sticker"
+                size_hint_x: None
 
-        ToggleButton:
-            text: "Sheet"
-            group: "sicker_option"
-            size_hint_x: None
+            ToggleButton:
+                id: small_sticker
+                text: "Small"
+                group: "sticker_option"
+                size_hint_x: None
 
-        Button:
-            size_hint_x: None
-            text: 'Generate'
-            on_press: main_window.on_generate(is_single=single_sticker.state == "down")
+            ToggleButton:
+                id: large_sticker
+                text: "Large"
+                group: "sticker_option"
+                size_hint_x: None
+                state: 'down'
+
+            ToggleButton:
+                id: sticker_sheet
+                text: "Sheet"
+                group: "sticker_option"
+                size_hint_x: None
+
+            Button:
+                size_hint_x: None
+                text: 'Generate'
+                on_press: search_screen.on_generate()
 
 
+<StickerScreen>:
+    id: sticker_screen
+    name: 'sticker'
+    padding: 32
+    spacing: 60
 
+    Button:
+        pos_hint: {'top': 1, 'right': 1}
+        size_hint: None, 0.05
+        text: 'Close'
+        on_press: root.manager.current = 'search'
+
+    BoxLayout:
+        id: stickers
+        orientation: 'vertical'
+
+
+<StickerSheetScreen>:
+    id: sticker_sheet_screen
+    name: 'sheet'
+    padding: 32
+    spacing: 60
+
+    Button:
+        text: 'Close'
+        on_press: root.manager.current = 'search'
 
 
 

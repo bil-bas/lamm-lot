@@ -11,7 +11,7 @@ from .utils import mm_to_px
 class StickerGenerator:
     SIZE_SMALL = mm_to_px(50), mm_to_px(30)
     SIZE_LARGE = mm_to_px(80), mm_to_px(50)
-    SIZE_SHEET = mm_to_px(75), mm_to_px(42)
+    SIZE_SHEET = mm_to_px(91.1), mm_to_px(38.1)
     TEXT_COLOR = 0, 0, 0
     MARGIN = mm_to_px(2)
 
@@ -33,7 +33,11 @@ class StickerGenerator:
         return data
 
     def _draw_picture(self, image: Image, greyscale: bool = True) -> None:
-        picture = Image.open(self._item["image_"])
+        try:
+            picture = Image.open(self._item["image_"])
+        except PermissionError:
+            return
+
         size = image.height - mm_to_px(16)
         picture = picture.resize((size, size), resample=Image.Resampling.LANCZOS)
 

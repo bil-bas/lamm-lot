@@ -69,7 +69,7 @@ class SearchScreen(Screen):
         drop_down.dismiss()
         self._site = self.find_site(button.text)
         self.ids["site_picker"].text = button.text
-        self._item.clear()
+        self._items.clear()
 
     def find_site(self, name: str) -> None:
         for site in self._sites:

@@ -46,6 +46,8 @@ class StickerScreen(Screen):
     def save_images(self):
         stickers = self.ids["stickers"].children
 
+        # TODO: Show a file save dialog, rather than using project folder.
+
         folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         
         if len(stickers) == 1:

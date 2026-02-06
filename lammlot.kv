@@ -134,15 +134,26 @@
     padding: 32
     spacing: 60
 
+    ScrollView:
+        do_scroll_x: False
+
+        BoxLayout:
+            id: stickers
+            orientation: 'vertical'
+            padding: 16
+            spacing: 16
+
     Button:
         pos_hint: {'top': 1, 'right': 1}
         size_hint: None, 0.05
         text: 'Close'
         on_press: root.manager.current = 'search'
 
-    BoxLayout:
-        id: stickers
-        orientation: 'vertical'
+    Button:
+        pos_hint: {'bottom': 0, 'right': 1}
+        size_hint: None, 0.05
+        text: 'Save'
+        on_press: sticker_screen.save_images()
 
 
 <StickerSheetScreen>:

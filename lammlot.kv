@@ -1,43 +1,10 @@
 #:kivy 2.3.1
 
-#:import SG lammlot.sticker_generator.StickerGenerator
+#:import Pluralizer pluralizer.Pluralizer
 
-<SearchResult>:
-    orientation: 'horizontal'
-
-    canvas.before:
-        Color:
-            rgba: (0.0, 0.9, 0.1, 0.3) if self.selected else (0, 0, 0, 1)
-        Rectangle:
-            pos: self.pos
-            size: self.size
-
-    Image:
-        id: image
-        fit_mode: "scale-down"
-        size: 80, 80
-        size_hint: None, None
-        source: root.image_
-
-    BoxLayout:
-        orientation: 'vertical'
-        padding: 8
-
-        Label:
-            markup: True
-            text_size: self.size
-            halign: 'left'
-            text: root.title_
-        Label:
-            markup: True
-            text_size: self.size
-            halign: 'left'
-            text: root.description_
-        Label:
-            text_size: self.size
-            text: "£0.00 per week"
-            halign: 'right'
-            text: root.loan_fee_
+#:include lammlot/kv/search_screen.kv
+#:include lammlot/kv/sticker_screen.kv
+#:include lammlot/kv/sticker_sheet_screen.kv
 
 
 <RadioButton@ToggleButton>:
@@ -51,126 +18,20 @@
     text: 'Close'
 
 
-<SearchScreen>:
-    id: search_screen
-    name: 'search'
-    padding: 32
-    spacing: 60
+<Dialog@Popup>:
+    auto_dismiss: False
+    size_hint: None, None
+
+
+<SavedDialog@Dialog>:
+    size: 300, 200
+    title: "Saved!"
+    num_saved: 0
 
     BoxLayout:
         orientation: 'vertical'
-
-        StackLayout:
-            size_hint: 1, 0.05
-            spacing: 16
-
-            Button:
-                id: site_picker
-                on_release: search_screen.open_site_menu(self)
-                size_hint_x: None
-                width: 400
-
-            Label:
-                text: 'SKU'
-                text_size: self.size
-                halign: 'right'
-                size_hint_x: None
-
-            TextInput:
-                id: sku_search
-                size_hint_x: None
-
-            Label:
-                text: 'Title'
-                halign: 'right'
-                size_hint_x: None
-
-            TextInput:
-                id: name_search
-                size_hint_x: None
-
-            Button:
-                text: 'Search'
-                on_press: search_screen.refresh_items()
-                size_hint_x: None
-
-        SearchResults:
-            id: item_list
-            viewclass: 'SearchResult'
-            SelectableRecycleBoxLayout:
-                default_size: None, dp(56)
-                default_size_hint: 1, None
-                size_hint_y: None
-                height: self.minimum_height
-                orientation: 'vertical'
-                multiselect: True
-                touch_multiselect: True
-
-        StackLayout:
-            size_hint: 1, 0.05
-            spacing: 16
-
-            Label:
-                text: "Sticker"
-                size_hint_x: None
-
-            RadioButton:
-                id: small_sticker
-                text: f"{SG.SIZE_SMALL[0]}x{SG.SIZE_SMALL[1]}mm"
-                group: "sticker_option"
-                on_press: root.sticker_size = SG.SIZE_SMALL
-
-            RadioButton:
-                id: medium_sticker
-                text: f"{SG.SIZE_MEDIUM[0]}x{SG.SIZE_SMALL[1]}mm"
-                group: "sticker_option"
-                on_press: root.sticker_size = SG.SIZE_MEDIUM
-
-            RadioButton:
-                id: large_sticker
-                text: f"{SG.SIZE_LARGE[0]}x{SG.SIZE_LARGE[1]}mm"
-                group: "sticker_option"
-                state: 'down'
-                on_press: root.sticker_size = SG.SIZE_LARGE
-
-            Button:
-                id: generate_button
-                size_hint_x: None
-                text: 'Generate'
-                on_press: search_screen.on_generate()
-                disabled: True
-
-
-<StickerScreen>:
-    id: sticker_screen
-    name: 'sticker'
-    padding: 32
-    spacing: 60
-
-    ScrollView:
-        do_scroll_x: False
-
-        BoxLayout:
-            id: stickers
-            orientation: 'vertical'
-            padding: 16
-            spacing: 16
-
-    CloseButton:
-        on_press: root.manager.current = 'search'
-
-    Button:
-        pos_hint: {'bottom': 0, 'right': 1}
-        size_hint: None, 0.05
-        text: 'Save'
-        on_press: sticker_screen.save_images()
-
-
-<StickerSheetScreen>:
-    id: sticker_sheet_screen
-    name: 'sheet'
-    padding: 32
-    spacing: 60
-
-    CloseButton:
-        on_press: root.manager.current = 'search'
+        Label:
+            text: f"Saved {Pluralizer().pluralize('sticker', root.num_saved, True)}."
+        Button:
+            text: "Close"
+            on_release: root.dismiss()

@@ -1,0 +1,11 @@
+#:kivy 2.3.1
+
+
+<StickerSheetScreen>:
+    id: sticker_sheet_screen
+    name: 'sheet'
+    padding: 32
+    spacing: 60
+
+    CloseButton:
+        on_press: root.manager.current = 'search'

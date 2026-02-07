@@ -1,0 +1,39 @@
+#:kivy 2.3.1
+
+
+<SearchResult>:
+    orientation: 'horizontal'
+
+    canvas.before:
+        Color:
+            rgba: (0.0, 0.9, 0.1, 0.3) if self.selected else (0, 0, 0, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    Image:
+        id: image
+        fit_mode: "scale-down"
+        size: 80, 80
+        size_hint: None, None
+        source: root.image_
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 8
+
+        Label:
+            markup: True
+            text_size: self.size
+            halign: 'left'
+            text: root.title_
+        Label:
+            markup: True
+            text_size: self.size
+            halign: 'left'
+            text: root.description_
+        Label:
+            text_size: self.size
+            text: "£0.00 per week"
+            halign: 'right'
+            text: root.loan_fee_

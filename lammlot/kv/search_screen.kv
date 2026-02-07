@@ -1,0 +1,93 @@
+#:kivy 2.3.1
+
+#:include lammlot/kv/search_result.kv
+
+
+<SearchScreen>:
+    id: search_screen
+    name: 'search'
+    padding: 32
+    spacing: 60
+
+    BoxLayout:
+        orientation: 'vertical'
+
+        StackLayout:
+            size_hint: 1, 0.05
+            spacing: 16
+
+            Button:
+                id: site_picker
+                on_release: search_screen.open_site_menu(self)
+                size_hint_x: None
+                width: 400
+
+            Label:
+                text: 'SKU'
+                text_size: self.size
+                halign: 'right'
+                size_hint_x: None
+
+            TextInput:
+                id: sku_search
+                size_hint_x: None
+
+            Label:
+                text: 'Title'
+                halign: 'right'
+                size_hint_x: None
+
+            TextInput:
+                id: name_search
+                size_hint_x: None
+
+            Button:
+                text: 'Search'
+                on_press: search_screen.refresh_items()
+                size_hint_x: None
+
+        SearchResults:
+            id: item_list
+            viewclass: 'SearchResult'
+            SelectableRecycleBoxLayout:
+                default_size: None, dp(56)
+                default_size_hint: 1, None
+                size_hint_y: None
+                height: self.minimum_height
+                orientation: 'vertical'
+                multiselect: True
+                touch_multiselect: True
+
+        StackLayout:
+            size_hint: 1, 0.05
+            spacing: 16
+
+            Label:
+                text: "Sticker"
+                size_hint_x: None
+
+            RadioButton:
+                id: small_sticker
+                text: f"{SG.SIZE_SMALL[0]}x{SG.SIZE_SMALL[1]}mm"
+                group: "sticker_option"
+                on_press: root.sticker_size = SG.SIZE_SMALL
+
+            RadioButton:
+                id: medium_sticker
+                text: f"{SG.SIZE_MEDIUM[0]}x{SG.SIZE_SMALL[1]}mm"
+                group: "sticker_option"
+                on_press: root.sticker_size = SG.SIZE_MEDIUM
+
+            RadioButton:
+                id: large_sticker
+                text: f"{SG.SIZE_LARGE[0]}x{SG.SIZE_LARGE[1]}mm"
+                group: "sticker_option"
+                state: 'down'
+                on_press: root.sticker_size = SG.SIZE_LARGE
+
+            Button:
+                id: generate_button
+                size_hint_x: None
+                text: 'Generate'
+                on_press: search_screen.on_generate()
+                disabled: True

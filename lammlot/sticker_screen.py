@@ -3,6 +3,8 @@ from pathlib import Path
 
 from kivy.uix.screenmanager import Screen
 from kivy.uix.image import Image, CoreImage
+from kivy.factory import Factory
+
 from kivy.properties import ListProperty, DictProperty
 
 from .sticker_generator import StickerGenerator
@@ -44,4 +46,10 @@ class StickerScreen(Screen):
         
         for sticker, item in zip(stickers, self.selected):
             sticker.texture.save(str(folder / f"{item["sku"]}.png"), flipped=False)
+
+        self.manager.current = "search"
+
+        popup = Factory.SavedDialog()
+        popup.num_saved = len(self.selected)
+        popup.open()
             

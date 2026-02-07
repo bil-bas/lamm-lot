@@ -1,3 +1,7 @@
+#:kivy 2.3.1
+
+#:import SG lammlot.sticker_generator.StickerGenerator
+
 <SearchResult>:
     orientation: 'horizontal'
 
@@ -34,6 +38,18 @@
             text: "£0.00 per week"
             halign: 'right'
             text: root.loan_fee_
+
+
+<RadioButton@ToggleButton>:
+    size_hint_x: None
+    allow_no_selection: False
+
+
+<CloseButton@Button>:
+    pos_hint: {'top': 1, 'right': 1}
+    size_hint: None, 0.05
+    text: 'Close'
+
 
 <SearchScreen>:
     id: search_screen
@@ -98,27 +114,24 @@
                 text: "Sticker"
                 size_hint_x: None
 
-            ToggleButton:
+            RadioButton:
                 id: small_sticker
-                text: "Small"
+                text: f"{SG.SIZE_SMALL[0]}x{SG.SIZE_SMALL[1]}mm"
                 group: "sticker_option"
-                size_hint_x: None
-                on_press: search_screen.set_sticker_type(self, "small")
+                on_press: root.sticker_size = SG.SIZE_SMALL
 
-            ToggleButton:
+            RadioButton:
+                id: medium_sticker
+                text: f"{SG.SIZE_MEDIUM[0]}x{SG.SIZE_SMALL[1]}mm"
+                group: "sticker_option"
+                on_press: root.sticker_size = SG.SIZE_MEDIUM
+
+            RadioButton:
                 id: large_sticker
-                text: "Large"
+                text: f"{SG.SIZE_LARGE[0]}x{SG.SIZE_LARGE[1]}mm"
                 group: "sticker_option"
-                size_hint_x: None
                 state: 'down'
-                on_press: search_screen.set_sticker_type(self, "large")
-
-            ToggleButton:
-                id: sticker_sheet
-                text: "Sheet"
-                group: "sticker_option"
-                size_hint_x: None
-                on_press: search_screen.set_sticker_type(self, "sheet")
+                on_press: root.sticker_size = SG.SIZE_LARGE
 
             Button:
                 id: generate_button
@@ -143,10 +156,7 @@
             padding: 16
             spacing: 16
 
-    Button:
-        pos_hint: {'top': 1, 'right': 1}
-        size_hint: None, 0.05
-        text: 'Close'
+    CloseButton:
         on_press: root.manager.current = 'search'
 
     Button:
@@ -162,10 +172,5 @@
     padding: 32
     spacing: 60
 
-    Button:
-        text: 'Close'
+    CloseButton:
         on_press: root.manager.current = 'search'
-
-
-
-

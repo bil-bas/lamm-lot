@@ -1,13 +1,10 @@
-PRINT_QUALITY = 300 / 72
+DPI_PRINT_QUALITY = 300
+DPI_DEFAULT_QUALITY = 72
+DPI_DEFAULT_TO_DMM = 3.7792
 
-MM_TO_PX = 3.7792 * PRINT_QUALITY
 
+def mm_to_screen_px(value: float) -> int:
+    return int(round(value * 4))
 
-def mm_to_px(value: float) -> int:
-    return int(round(value * MM_TO_PX))
-
-def px_to_mm(value: int) -> float:
-    return value // MM_TO_PX
-
-def print_to_screen(value: int) -> int:
-    return value / PRINT_QUALITY
+def mm_to_print_px(value: float):
+    return int(round(value * (DPI_PRINT_QUALITY / DPI_DEFAULT_QUALITY) * DPI_DEFAULT_TO_DMM))

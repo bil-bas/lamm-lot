@@ -3,12 +3,16 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.dropdown import DropDown
 from kivy.uix.button import Button
 from kivy.uix.togglebutton import ToggleButton
+from kivy.properties import ListProperty
 
 from .lend_engine_client import LendEngineClient
-from lammlot.search_results import SearchResult, SearchResults
+from .search_results import SearchResult, SearchResults
+from .sticker_generator import StickerGenerator
 
 
 class SearchScreen(Screen):
+    sticker_size = ListProperty(StickerGenerator.SIZE_LARGE)  # [mm, mm]
+
     @property
     def selected_items(self) -> list[SearchResult]:
         results: SearchResults = self.ids["item_list"]
@@ -18,7 +22,6 @@ class SearchScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self._sticker_type = "large"
         self._sites: list[str] = []
         self._site = None
         self._items: list[dict] = []
@@ -79,16 +82,12 @@ class SearchScreen(Screen):
         raise RuntimeError("Site not found")
 
     def on_generate(self) -> None:
-        if self._sticker_type == "sheet":
-            screen = self.manager.get_screen("sheet")
-        else:
-            screen = self.manager.get_screen("sticker")
-            screen.sticker_type = self._sticker_type
-
+        screen = self.manager.get_screen("sticker")
+        screen.sticker_size = self.sticker_size
         screen.selected = self.selected_items
         screen.site = self._site
 
-        self.manager.current = "sheet" if self._sticker_type == "sheet" else "sticker"
+        self.manager.current = "sticker"
 
     def update_selected(self) -> None:
         self.ids["generate_button"].disabled = not self.selected_items

@@ -4,7 +4,6 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.image import Image, CoreImage
 
 from .sticker_generator import StickerGenerator
-from .utils import print_to_screen
 
 
 class SheetScreen(Screen):

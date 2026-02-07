@@ -1,33 +1,36 @@
 from PIL import Image, ImageDraw, ImageFont
-from math import floor
 from io import BytesIO
 
 from barcode import Code128
 from barcode.writer import ImageWriter
 
-from .utils import mm_to_px
+from .utils import mm_to_print_px, DPI_PRINT_QUALITY
 
 
 class StickerGenerator:
-    SIZE_SMALL = mm_to_px(50), mm_to_px(30)
-    SIZE_LARGE = mm_to_px(80), mm_to_px(50)
-    SIZE_SHEET = mm_to_px(91.1), mm_to_px(38.1)
+    SIZE_SMALL = [40, 30]
+    SIZE_MEDIUM = [50, 40]
+    SIZE_LARGE = [80, 50]
+    
     TEXT_COLOR = 0, 0, 0
-    MARGIN = mm_to_px(2)
+    MARGIN = mm_to_print_px(2)
 
     def __init__(self, item: dict, site: dict):
         self._item = item
         self._site = site
 
-    def generate(self, size: tuple[int, int]) -> BytesIO:
-        image = Image.new(mode="RGB", size=size, color=(255, 255, 255))
+    def generate(self, size: list[int, int]) -> BytesIO:
+        assert size in (self.SIZE_SMALL, self.SIZE_MEDIUM, self.SIZE_LARGE), size
+
+        size_px = mm_to_print_px(size[0]), mm_to_print_px(size[1])
+        image = Image.new(mode="RGB", size=size_px, color=(255, 255, 255))
 
         self._draw_picture(image)
         self._draw_text(image)
         self._draw_barcode(image)
 
         data = BytesIO()
-        image.save(data, format="png", dpi=(300, 300))
+        image.save(data, format="png", dpi=(DPI_PRINT_QUALITY, DPI_PRINT_QUALITY))
         data.seek(0)
 
         return data
@@ -38,7 +41,7 @@ class StickerGenerator:
         except PermissionError:
             return
 
-        size = image.height - mm_to_px(16)
+        size = image.height - mm_to_print_px(16)
         picture = picture.resize((size, size), resample=Image.Resampling.LANCZOS)
 
         if greyscale:

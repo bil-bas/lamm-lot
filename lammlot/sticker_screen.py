@@ -4,58 +4,44 @@ from zipfile import ZipFile
 
 from kivy.uix.screenmanager import Screen
 from kivy.uix.image import Image, CoreImage
-from kivy.properties import ListProperty, DictProperty, StringProperty
+from kivy.properties import ListProperty, DictProperty
 
 from .sticker_generator import StickerGenerator
-from .utils import print_to_screen
+from .utils import mm_to_screen_px
 
 
 class StickerScreen(Screen):
     selected = ListProperty()
     site = DictProperty()
-    sticker_type = StringProperty()
+    sticker_size = ListProperty()
 
     def on_pre_enter(self, *args) -> None:
-        if self.sticker_type == "small":
-            size = StickerGenerator.SIZE_SMALL
-        elif self.sticker_type == "large":
-            size = StickerGenerator.SIZE_LARGE
-        else:
-            raise ValueError(f"Bad sticker type {self.sticker_type}")
-
         for item in self.selected:
             generator = StickerGenerator(item=item, site=self.site)
-            self._add_sticker(generator, size)
+            self._add_sticker(generator)
 
     def on_leave(self, *args):
         self.ids["stickers"].clear_widgets()
 
         return super().on_leave(*args)
 
-    def _add_sticker(self, generator: StickerGenerator, size: list[int, int]) -> None:
-        data = generator.generate(size)
+    def _add_sticker(self, generator: StickerGenerator) -> None:
+        data = generator.generate(self.sticker_size)
 
         tex = CoreImage(BytesIO(data.read()), ext="png")
         image = Image()
         image.texture = tex.texture
         image.size_hint = None, None
-        image.size = print_to_screen(size[0]), print_to_screen(size[1])
+        image.size = mm_to_screen_px(self.sticker_size[0]), mm_to_screen_px(self.sticker_size[1])
 
         self.ids["stickers"].add_widget(image)
 
     def save_images(self):
         stickers = self.ids["stickers"].children
 
-        # TODO: Show a file save dialog, rather than using project folder.
+        # TODO: Show a folder save dialog, rather than using project folder.
 
-        folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        folder = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "output")
         
-        if len(stickers) == 1:
-           stickers[0].texture.save(os.path.join(folder, f"{self.selected[0]["sku"]}.png"),
-                                   flipped=False)
-        else:
-            with ZipFile("stickers.zip", "w") as zip_file:
-                for sticker, item in zip(stickers, self.selected):
-                    data = BytesIO()
-                    sticker.texture.save(data, flipped=False, fmt="png")
-                    zip_file.writestr(f"{item["sku"]}.png", data.getvalue())
+        for sticker, item in zip(stickers, self.selected):
+            sticker.texture.save(os.path.join(folder, f"{item["sku"]}.png"), flipped=False, fmt="png")

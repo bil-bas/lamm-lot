@@ -1,5 +1,4 @@
 from io import BytesIO
-import os
 from pathlib import Path
 
 from kivy.uix.screenmanager import Screen
@@ -40,8 +39,9 @@ class StickerScreen(Screen):
         stickers = self.ids["stickers"].children
 
         # TODO: Show a folder save dialog, rather than using project folder.
-        folder = Path(__file__).absolute().parent.parent / "output"
+        folder = Path(__file__).absolute().parent.parent / "output" / f"{self.sticker_size[0]}x{self.sticker_size[1]}"
         folder.mkdir(exist_ok=True)
         
         for sticker, item in zip(stickers, self.selected):
-            sticker.texture.save(os.path.join(folder / f"{item["sku"]}.png"), flipped=False, fmt="png")
+            sticker.texture.save(str(folder / f"{item["sku"]}.png"), flipped=False)
+            

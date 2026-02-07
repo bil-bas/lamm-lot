@@ -1,6 +1,7 @@
 #:kivy 2.3.1
 
 #:import Pluralizer pluralizer.Pluralizer
+#:set p Pluralizer()
 
 #:include lammlot/kv/search_screen.kv
 #:include lammlot/kv/sticker_screen.kv
@@ -31,7 +32,7 @@
     BoxLayout:
         orientation: 'vertical'
         Label:
-            text: f"Saved {Pluralizer().pluralize('sticker', root.num_saved, True)}."
+            text: f"Saved {p.pluralize('sticker', root.num_saved, True)}."
         Button:
             text: "Close"
             on_release: root.dismiss()

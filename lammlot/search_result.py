@@ -20,11 +20,10 @@ class SearchResult(RecycleDataViewBehavior, BoxLayout):
     selected = BooleanProperty(False)
     selectable = BooleanProperty(True)
 
-    title_ = StringProperty()
-    description_ = StringProperty()
-    loan_fee_ = StringProperty()
-    image_ = StringProperty()
-
+    title = StringProperty()
+    description = StringProperty()
+    loan_fee = StringProperty()
+    image = StringProperty()
     screen = ObjectProperty()
 
     def on_touch_down(self, touch):

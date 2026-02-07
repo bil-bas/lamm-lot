@@ -16,7 +16,7 @@
         fit_mode: "scale-down"
         size: 80, 80
         size_hint: None, None
-        source: root.image_
+        source: root.image
 
     BoxLayout:
         orientation: 'vertical'
@@ -26,14 +26,14 @@
             markup: True
             text_size: self.size
             halign: 'left'
-            text: root.title_
+            text: root.title
         Label:
             markup: True
             text_size: self.size
             halign: 'left'
-            text: root.description_
+            text: root.description
         Label:
             text_size: self.size
             text: "£0.00 per week"
             halign: 'right'
-            text: root.loan_fee_
+            text: root.loan_fee

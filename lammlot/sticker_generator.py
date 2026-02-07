@@ -37,7 +37,7 @@ class StickerGenerator:
 
     def _draw_picture(self, image: Image, greyscale: bool = True) -> None:
         try:
-            picture = Image.open(self._item["image_"])
+            picture = Image.open(self._item["image"])
         except PermissionError:
             return
 

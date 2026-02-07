@@ -6,7 +6,7 @@ from kivy.uix.togglebutton import ToggleButton
 from kivy.properties import ListProperty
 
 from .lend_engine_client import LendEngineClient
-from .search_results import SearchResult, SearchResults
+from .search_result import SearchResult, SearchResults
 from .sticker_generator import StickerGenerator
 
 
@@ -42,21 +42,22 @@ class SearchScreen(Screen):
         self._items = self._api_client.fetch_items(site=self._site["@id"],
                                                    name=self.ids["name_search"].text,
                                                    sku=self.ids["sku_search"].text)
-
-        for i, item in enumerate(self._items):
-            item["index"] = i
-            item["image_"] = item["image"] if "image" in item else ""
-
-            # flake8 doesn't like aquare brackets in a string and inside the replacement braces.
-            sku, name = item["sku"], item["name"]["en"]
-            item["title_"] = f"[b]{sku}[/b] - {name}"
-
-            item["description_"] = item["description"]["en"] or ""
-            item["loan_fee_"] = f"£{item["loanFee"]} per week"
-            item["screen"] = self
-
-        self.ids["item_list"].data = self._items
+        
+        self.ids["item_list"].data = [self._list_data(item, i) for i, item in enumerate(self._items)]
         self.ids["generate_button"].disabled = True
+
+    def _list_data(self, item: dict, index: int) -> dict:
+        sku, name = item["sku"], item["name"]["en"]
+
+        return {
+            "index": index,
+            "image": item["image"] if "image" in item else "",
+            # flake8 doesn't like aquare brackets in a string and inside the replacement braces.
+            "title": f"[b]{sku}[/b] - {name}",
+            "description": item["description"]["en"] or "",
+            "loan_fee_": f"£{item["loanFee"]} per week",
+            "screen": self,
+        }
 
     def open_site_menu(self, widget: Button) -> None:
         drop_down = DropDown()

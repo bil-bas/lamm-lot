@@ -6,3 +6,4 @@ pexpect
 python-for-android
 python-barcode
 pluralizer
+qrcode[pil]

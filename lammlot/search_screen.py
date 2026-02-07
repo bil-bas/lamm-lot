@@ -43,6 +43,9 @@ class SearchScreen(Screen):
                                                    name=self.ids["name_search"].text,
                                                    sku=self.ids["sku_search"].text)
         
+        for item in self._items:
+            item["url"] = self._api_client.site_url(f"product/{item["id"]}")
+
         self.ids["item_list"].data = [self._list_data(item, i) for i, item in enumerate(self._items)]
         self.ids["generate_button"].disabled = True
 
@@ -52,7 +55,7 @@ class SearchScreen(Screen):
         return {
             "index": index,
             "image": item["image"] if "image" in item else "",
-            # flake8 doesn't like aquare brackets in a string and inside the replacement braces.
+            # flake8 doesn't like square brackets in a string and inside the replacement braces.
             "title": f"[b]{sku}[/b] - {name}",
             "description": item["description"]["en"] or "",
             "loan_fee_": f"£{item["loanFee"]} per week",

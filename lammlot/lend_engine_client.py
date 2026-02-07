@@ -5,18 +5,25 @@ import urllib.parse as urlparse
 
 
 class LendEngineClient:
-    API_BASE_URL = "https://lammlibrary.lend-engine-app.com/api/2/"
+    SITE_URL = "https://lammlibrary.lend-engine-app.com"
+    API_URL = urlparse.urljoin(SITE_URL, "/api/2/")
     IMAGE_BASE_URL = "https://s3-us-west-2.amazonaws.com/lend-engine/lammlibrary/large/"
     ENV_TOKEN = "LEND_ENGINE_TOKEN"
 
     def __init__(self):
-        response = requests.post(urlparse.urljoin(self.API_BASE_URL, "token/refresh"),
+        response = requests.post(self.api_url("token/refresh"),
                                  data={"refresh_token": os.environ[self.ENV_TOKEN]},
                                  verify=False)
         self._token = response.json()["token"]
 
+    def site_url(self, relative_path: str) -> str:
+        return urlparse.urljoin(self.SITE_URL, relative_path)
+    
+    def api_url(self, relative_path: str) -> str:
+        return urlparse.urljoin(self.API_URL, relative_path)
+
     def _get_list(self, uri, **kwargs):
-        response = requests.get(urlparse.urljoin(self.API_BASE_URL, uri),
+        response = requests.get(self.api_url(uri),
                                 headers={"Authorization": f"Bearer {self._token}"},
                                 verify=False,
                                 **kwargs)
@@ -44,7 +51,7 @@ class LendEngineClient:
 
         cache_path = os.path.join("./images_cache", filename)
         if not os.path.exists(cache_path):
-            response = requests.get(urlparse.urljoin(self.IMAGE_BASE_URL, filename))
+            response = requests.get(self.full_url(filename))
 
             with open(cache_path, "wb") as f:
                 f.write(response.content)

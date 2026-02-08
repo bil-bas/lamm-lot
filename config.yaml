@@ -7,7 +7,9 @@ options:
   - - 40
     - 30
   - - 50
-    - 40
+    - 30
+  - - 50
+    - 50
   - - 80
     - 50
   current_sticker_size:
@@ -15,7 +17,7 @@ options:
   - 50
   current_site: Lancaster Community Makerspace
   sticker_size:
-  - 40
+  - 50
   - 30
 stickers:
   show_site: true

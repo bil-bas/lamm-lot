@@ -33,7 +33,7 @@ class StickerScreen(Screen):
         image = Image()
         image.texture = tex.texture
         image.size_hint = None, None
-        image.size = mm_to_screen_px(self.sticker_size[0]), mm_to_screen_px(self.sticker_size[1])
+        image.size = [mm_to_screen_px(d) for d in self.sticker_size]
 
         self.ids["stickers"].add_widget(image)
 
@@ -41,9 +41,10 @@ class StickerScreen(Screen):
         stickers = self.ids["stickers"].children
 
         # TODO: Show a folder save dialog, rather than using project folder.
-        folder = Path(__file__).absolute().parent.parent / "output" / f"{self.sticker_size[0]}x{self.sticker_size[1]}mm"
+        folder = Path(__file__).absolute().parent.parent / "output"
+        folder = folder / f"{self.sticker_size[0]}x{self.sticker_size[1]}mm"
         folder.mkdir(parents=True, exist_ok=True)
-        
+
         for sticker, item in zip(stickers, self.selected):
             filename = sanitize(f"{item["sku"]}-{item["name"]["en"][:40]}.png")
             sticker.texture.save(str(folder / filename), flipped=False)
@@ -53,4 +54,3 @@ class StickerScreen(Screen):
         popup = Factory.SavedDialog()
         popup.num_saved = len(self.selected)
         popup.open()
-            

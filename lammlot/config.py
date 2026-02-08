@@ -1,6 +1,7 @@
 from cachetools import cached
 from omegaconf import OmegaConf
 
+
 @cached(cache={})
 def get_config():
     return OmegaConf.load(config_path())

@@ -1,4 +1,5 @@
-from kivy.properties import BooleanProperty, StringProperty, NumericProperty, ObjectProperty
+from kivy.properties import (BooleanProperty, StringProperty, NumericProperty,
+                             ObjectProperty)
 from kivy.uix.recycleboxlayout import RecycleBoxLayout
 from kivy.uix.recycleview import RecycleView
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
@@ -7,7 +8,8 @@ from kivy.uix.recycleview.layout import LayoutSelectionBehavior
 from kivy.uix.boxlayout import BoxLayout
 
 
-class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior, RecycleBoxLayout):
+class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
+                                 RecycleBoxLayout):
     pass
 
 
@@ -35,9 +37,8 @@ class SearchResult(RecycleDataViewBehavior, BoxLayout):
         if self.collide_point(*touch.pos) and self.selectable:
             return self.parent.select_with_touch(self.index, touch)
 
-    def apply_selection(self, results, index, is_selected):
+    def apply_selection(self, rv, index, is_selected):
         ''' Respond to the selection of items in the view. '''
         self.selected = is_selected
 
         self.screen.update_selected()
-

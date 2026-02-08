@@ -16,9 +16,6 @@ options:
   - 80
   - 50
   current_site: Lancaster Community Makerspace
-  sticker_size:
-  - 50
-  - 30
 stickers:
   show_site: true
   organization: Part of BayShare - bayshare.org.uk

@@ -1,13 +1,12 @@
 import os
 import requests
-from PIL import Image
 import urllib.parse as urlparse
+from pathlib import Path
+
+from .config import get_config
 
 
 class LendEngineClient:
-    SITE_URL = "https://lammlibrary.lend-engine-app.com"
-    API_URL = urlparse.urljoin(SITE_URL, "/api/2/")
-    IMAGE_BASE_URL = "https://s3-us-west-2.amazonaws.com/lend-engine/lammlibrary/large/"
     ENV_TOKEN = "LEND_ENGINE_TOKEN"
 
     def __init__(self):
@@ -17,10 +16,10 @@ class LendEngineClient:
         self._token = response.json()["token"]
 
     def site_url(self, relative_path: str) -> str:
-        return urlparse.urljoin(self.SITE_URL, relative_path)
+        return urlparse.urljoin(get_config().lend_engine.site_url, relative_path)
     
     def api_url(self, relative_path: str) -> str:
-        return urlparse.urljoin(self.API_URL, relative_path)
+        return urlparse.urljoin(get_config().lend_engine.api_url, relative_path)
 
     def _get_list(self, uri, **kwargs):
         response = requests.get(self.api_url(uri),
@@ -38,22 +37,19 @@ class LendEngineClient:
 
         for item in items:
             if item["imageName"]:
-                item["image"] = self._fetch_image(item["imageName"])
+                item["image"] = str(self._fetch_image(item["imageName"]))
 
         return [item for item in items
                 if item["isActive"] and item["itemType"] == "loan" and site in item["sites"]]
 
+    
     def _fetch_image(self, filename: str) -> str:
-        try:
-            os.mkdir("./images_cache")
-        except:
-            pass
+        folder = Path("./images_cache")
+        folder.mkdir(exist_ok=True)
 
-        cache_path = os.path.join("./images_cache", filename)
-        if not os.path.exists(cache_path):
-            response = requests.get(self.full_url(filename))
-
-            with open(cache_path, "wb") as f:
-                f.write(response.content)
-
-        return cache_path
+        image_path = folder / filename
+        if not image_path.exists():
+            response = requests.get(urlparse.urljoin(get_config().lend_engine.image_url, filename))
+            image_path.write_bytes(response.content)
+             
+        return image_path

@@ -4,22 +4,28 @@ from kivy.uix.dropdown import DropDown
 from kivy.uix.button import Button
 from kivy.uix.togglebutton import ToggleButton
 from kivy.properties import ListProperty
+from omegaconf import OmegaConf
 
 from .lend_engine_client import LendEngineClient
 from .search_result import SearchResult, SearchResults
 from .sticker_generator import StickerGenerator
+from .config import get_config, save_config
 
 
 class SearchScreen(Screen):
-    sticker_size = ListProperty(StickerGenerator.SIZE_LARGE)  # [mm, mm]
-
     @property
     def selected_items(self) -> list[SearchResult]:
         results: SearchResults = self.ids["item_list"]
 
         return [self._items[c.index] for c in results.children[0].children if c.selected]
+    
+    @property
+    def sticker_size(self) -> list[int, int]:
+        return self._sticker_size
 
     def __init__(self, **kwargs):
+        self._sticker_size = get_config().options.sticker_size
+
         super().__init__(**kwargs)
 
         self._sites: list[str] = []
@@ -29,13 +35,14 @@ class SearchScreen(Screen):
 
         Clock.schedule_once(self.fetch_sites, 0.25)
 
-    def set_sticker_type(self, button: ToggleButton, value: str) -> bool:
-        # TODO: prevent button being toggled off.
-        self._sticker_type = value
+    def set_sticker_size(self, size: list[int, int]) -> None:
+        self._sticker_size = size
+        get_config().options.sticker_size = size
+        save_config()
 
     def fetch_sites(self, called_after: float = 0) -> None:
         self._sites = self._api_client.fetch_sites()
-        self._site = self._sites[0]  # TODO: read from settings file.
+        self._site = self.find_site(get_config().options.current_site) or self._sites[0]
         self.ids["site_picker"].text = self._site["name"]
 
     def refresh_items(self) -> None:
@@ -52,9 +59,11 @@ class SearchScreen(Screen):
     def _list_data(self, item: dict, index: int) -> dict:
         sku, name = item["sku"], item["name"]["en"]
 
+        assert isinstance(item.get("image", ""), str)
+
         return {
             "index": index,
-            "image": item["image"] if "image" in item else "",
+            "image": item.get("image", ""),
             # flake8 doesn't like square brackets in a string and inside the replacement braces.
             "title": f"[b]{sku}[/b] - {name}",
             "description": item["description"]["en"] or "",
@@ -75,8 +84,13 @@ class SearchScreen(Screen):
     def callback_site_menu(self, button: Button, drop_down: DropDown) -> None:
         drop_down.dismiss()
         self._site = self.find_site(button.text)
+        
         self.ids["site_picker"].text = button.text
         self._items.clear()
+        self.ids["item_list"].data.clear()
+
+        get_config().options.current_site = button.text
+        save_config()
 
     def find_site(self, name: str) -> None:
         for site in self._sites:
@@ -95,4 +109,3 @@ class SearchScreen(Screen):
 
     def update_selected(self) -> None:
         self.ids["generate_button"].disabled = not self.selected_items
-

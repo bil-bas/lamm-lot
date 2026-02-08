@@ -1,0 +1,12 @@
+lend_engine:
+  site_url: https://lammlibrary.lend-engine-app.com
+  api_url: https://lammlibrary.lend-engine-app.com/api/2/
+  image_url: https://s3-us-west-2.amazonaws.com/lend-engine/lammlibrary/large/
+options:
+  sticker_size:
+  - 50
+  - 40
+  current_site: Lancaster Community Makerspace
+stickers:
+  show_site: true
+  organization: Part of BayShare - bayshare.org.uk

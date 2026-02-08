@@ -70,20 +70,22 @@
                 id: small_sticker
                 text: f"{SG.SIZE_SMALL[0]}x{SG.SIZE_SMALL[1]}mm"
                 group: "sticker_option"
-                on_press: root.sticker_size = SG.SIZE_SMALL
+                state: "down" if root.sticker_size == SG.SIZE_SMALL else "normal"
+                on_press: root.set_sticker_size(SG.SIZE_SMALL)
 
             RadioButton:
                 id: medium_sticker
-                text: f"{SG.SIZE_MEDIUM[0]}x{SG.SIZE_SMALL[1]}mm"
+                text: f"{SG.SIZE_MEDIUM[0]}x{SG.SIZE_MEDIUM[1]}mm"
                 group: "sticker_option"
-                on_press: root.sticker_size = SG.SIZE_MEDIUM
+                state: "down" if root.sticker_size == SG.SIZE_MEDIUM else "normal"
+                on_press: root.set_sticker_size(SG.SIZE_MEDIUM)
 
             RadioButton:
                 id: large_sticker
                 text: f"{SG.SIZE_LARGE[0]}x{SG.SIZE_LARGE[1]}mm"
                 group: "sticker_option"
-                state: 'down'
-                on_press: root.sticker_size = SG.SIZE_LARGE
+                state: "down" if root.sticker_size == SG.SIZE_LARGE else "normal"
+                on_press: root.set_sticker_size(SG.SIZE_LARGE)
 
             Button:
                 id: generate_button

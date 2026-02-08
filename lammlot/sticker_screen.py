@@ -1,10 +1,10 @@
 from io import BytesIO
 from pathlib import Path
 
+from sanitize_filename.sanitize_filename import sanitize
 from kivy.uix.screenmanager import Screen
 from kivy.uix.image import Image, CoreImage
 from kivy.factory import Factory
-
 from kivy.properties import ListProperty, DictProperty
 
 from .sticker_generator import StickerGenerator
@@ -41,11 +41,12 @@ class StickerScreen(Screen):
         stickers = self.ids["stickers"].children
 
         # TODO: Show a folder save dialog, rather than using project folder.
-        folder = Path(__file__).absolute().parent.parent / "output" / f"{self.sticker_size[0]}x{self.sticker_size[1]}"
-        folder.mkdir(exist_ok=True)
+        folder = Path(__file__).absolute().parent.parent / "output" / f"{self.sticker_size[0]}x{self.sticker_size[1]}mm"
+        folder.mkdir(parents=True, exist_ok=True)
         
         for sticker, item in zip(stickers, self.selected):
-            sticker.texture.save(str(folder / f"{item["sku"]}.png"), flipped=False)
+            filename = sanitize(f"{item["sku"]}-{item["name"]["en"][:40]}.png")
+            sticker.texture.save(str(folder / filename), flipped=False)
 
         self.manager.current = "search"
 

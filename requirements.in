@@ -7,3 +7,6 @@ python-for-android
 python-barcode
 pluralizer
 qrcode[pil]
+omegaconf
+cachetools
+sanitize-filename

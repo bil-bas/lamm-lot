@@ -6,6 +6,7 @@ from barcode.writer import ImageWriter
 import qrcode
 
 from .utils import mm_to_print_px, DPI_PRINT_QUALITY
+from .config import get_config
 
 
 class StickerGenerator:
@@ -80,10 +81,12 @@ class StickerGenerator:
                    self._item["name"]["en"], self.TEXT_COLOR, font_title)
 
         # Bottom text
-        draw.text((self.MARGIN, image.height - font_size_large - font_size_small - self.MARGIN),
-                   self._site["name"], self.TEXT_COLOR, font_title)
+        if get_config().stickers.show_site:
+            draw.text((self.MARGIN, image.height - font_size_large - font_size_small - self.MARGIN),
+                    self._site["name"], self.TEXT_COLOR, font_title)
+    
         draw.text((self.MARGIN, image.height - font_size_small - self.MARGIN),
-                  "Part of BayShare - bayshare.org.uk", self.TEXT_COLOR, font_subtitle)
+                  get_config().stickers.organization, self.TEXT_COLOR, font_subtitle)
 
     def _draw_barcode(self, image: Image) -> None:
         barcode = self._create_barcode(self._item["sku"])

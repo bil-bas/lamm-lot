@@ -1,13 +1,27 @@
 # lammlot
-Client to the lend-engine API, to create an app that will make custom stickers (and hopefully more functionality)
 
-## Building for Windows
+An app for staff at [lend-engine](https://www.lend-engine.com/) sites that creates custom stickers, to print on a sticker machine, for your items. 
+
+## Features
+
+* search for items by site
+* select items to generate and save sticker images for, in multiple sizes
+* Supports python 3.13+ and (soon) executables for Android and Windows
+* Requires an API key from your Lend Engine site (Plus or Business level is needed)
+
+## Credits
+
+Created by Bil Bas at "BayShare - The Libraries of Things" (LoT group, for Morecambe Bay, that is not yet public).
+
+## Building
+
+### Windows
 
     python -m PyInstaller lammlot.spec
 
-## Building for Android
+### Android
 
-### Installation
+#### Installation
 
     git clone https://github.com/kivy/buildozer.git
     cd buildozer
@@ -15,9 +29,7 @@ Client to the lend-engine API, to create an app that will make custom stickers (
     cd ..
     buildozer init
 
-Install buildozer dependences (like python-for-android)
-
-### Deployment for testing
+#### Deployment for testing
 
 Plug in android device via USB, to build, push and run on device:
 

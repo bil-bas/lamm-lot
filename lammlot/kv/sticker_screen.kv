@@ -6,16 +6,14 @@
 <StickerScreen>:
     id: sticker_screen
     name: 'sticker'
-    padding: 32
-    spacing: 60
 
     ScrollView:
         do_scroll_x: False
 
         StackLayout:
             id: stickers
-            padding: 16
-            spacing: 16
+            padding: 30
+            spacing: 30
 
     CloseButton:
         on_press: root.manager.current = 'search'

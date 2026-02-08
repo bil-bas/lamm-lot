@@ -9,11 +9,7 @@ from .utils import mm_to_print_px, DPI_PRINT_QUALITY
 from .config import get_config
 
 
-class StickerGenerator:
-    SIZE_SMALL = [40, 30]
-    SIZE_MEDIUM = [50, 40]
-    SIZE_LARGE = [80, 50]
-    
+class StickerGenerator:  
     TEXT_COLOR = 0, 0, 0
     MARGIN = mm_to_print_px(2)
 
@@ -22,8 +18,6 @@ class StickerGenerator:
         self._site = site
 
     def generate(self, size: list[int, int]) -> BytesIO:
-        assert size in (self.SIZE_SMALL, self.SIZE_MEDIUM, self.SIZE_LARGE), size
-
         size_px = mm_to_print_px(size[0]), mm_to_print_px(size[1])
         image = Image.new(mode="RGB", size=size_px, color=(255, 255, 255))
 

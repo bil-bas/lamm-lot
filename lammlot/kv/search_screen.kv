@@ -1,15 +1,16 @@
 #:kivy 2.3.1
 
 #:include lammlot/kv/search_result.kv
+#:include lammlot/kv/sticker_size_button.kv
 
 
 <SearchScreen>:
     id: search_screen
     name: 'search'
-    padding: 32
-    spacing: 60
 
     BoxLayout:
+        padding: 30
+        spacing: 30
         orientation: 'vertical'
 
         StackLayout:
@@ -22,24 +23,30 @@
                 size_hint_x: None
                 width: 400
 
-            Label:
-                text: 'SKU'
-                text_size: self.size
-                halign: 'right'
+            BoxLayout:
+                orientation: 'horizontal'
+                spacing: 30
                 size_hint_x: None
+                width: 500
 
-            TextInput:
-                id: sku_search
-                size_hint_x: None
+                Label:
+                    text: 'SKU'
+                    text_size: self.size
+                    halign: 'right'
+                    size_hint_x: None
 
-            Label:
-                text: 'Title'
-                halign: 'right'
-                size_hint_x: None
+                TextInput:
+                    id: sku_search
+                    size_hint_x: None
 
-            TextInput:
-                id: name_search
-                size_hint_x: None
+                Label:
+                    text: 'Title'
+                    halign: 'right'
+                    size_hint_x: None
+
+                TextInput:
+                    id: name_search
+                    size_hint_x: None
 
             Button:
                 text: 'Search'
@@ -60,32 +67,17 @@
 
         StackLayout:
             size_hint: 1, 0.05
-            spacing: 16
+            spacing: 30
 
             Label:
-                text: "Sticker"
+                text: "Sticker size"
                 size_hint_x: None
 
-            RadioButton:
-                id: small_sticker
-                text: f"{SG.SIZE_SMALL[0]}x{SG.SIZE_SMALL[1]}mm"
-                group: "sticker_option"
-                state: "down" if root.sticker_size == SG.SIZE_SMALL else "normal"
-                on_press: root.set_sticker_size(SG.SIZE_SMALL)
-
-            RadioButton:
-                id: medium_sticker
-                text: f"{SG.SIZE_MEDIUM[0]}x{SG.SIZE_MEDIUM[1]}mm"
-                group: "sticker_option"
-                state: "down" if root.sticker_size == SG.SIZE_MEDIUM else "normal"
-                on_press: root.set_sticker_size(SG.SIZE_MEDIUM)
-
-            RadioButton:
-                id: large_sticker
-                text: f"{SG.SIZE_LARGE[0]}x{SG.SIZE_LARGE[1]}mm"
-                group: "sticker_option"
-                state: "down" if root.sticker_size == SG.SIZE_LARGE else "normal"
-                on_press: root.set_sticker_size(SG.SIZE_LARGE)
+            BoxLayout:
+                id: sticker_size_buttons
+                orientation: 'horizontal'
+                size_hint_x: None
+                width: len(self.children) * 150
 
             Button:
                 id: generate_button

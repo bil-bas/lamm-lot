@@ -3,9 +3,16 @@ lend_engine:
   api_url: https://lammlibrary.lend-engine-app.com/api/2/
   image_url: https://s3-us-west-2.amazonaws.com/lend-engine/lammlibrary/large/
 options:
-  sticker_size:
+  sticker_sizes:
+  - - 40
+    - 30
+  - - 50
+    - 40
+  - - 80
+    - 50
+  current_sticker_size:
+  - 80
   - 50
-  - 40
   current_site: Lancaster Community Makerspace
 stickers:
   show_site: true

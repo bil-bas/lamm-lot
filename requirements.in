@@ -1,3 +1,9 @@
+# To create requirements.txt
+#    python -m piptools compile
+#
+# To sync from requirements.in
+#    python -m piptools sync
+
 requests
 kivy[base]
 pyinstaller
@@ -10,3 +16,5 @@ qrcode[pil]
 omegaconf
 cachetools
 sanitize-filename
+pip-tools
+pip<26.0  # Pip tools is only compatible with with 25.*

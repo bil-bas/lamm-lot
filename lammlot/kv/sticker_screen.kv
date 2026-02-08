@@ -10,7 +10,10 @@
     ScrollView:
         do_scroll_x: False
 
-        StackLayout:
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: None
+            height: sum((c.height + 30) for c in self.children) # TODO: Must be better way...?
             id: stickers
             padding: 30
             spacing: 30

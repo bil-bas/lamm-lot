@@ -42,7 +42,7 @@ class SearchScreen(Screen):
             self.ids["sticker_size_buttons"].add_widget(button)
 
     def set_sticker_size(self, size: list[int]) -> None:
-        get_config().options.sticker_size = list(size)
+        get_config().options.current_sticker_size = list(size)
         save_config()
 
     def fetch_sites(self, called_after: float = 0) -> None:

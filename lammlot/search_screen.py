@@ -56,11 +56,19 @@ class SearchScreen(Screen):
             name=self.ids["name_search"].text,
             sku=self.ids["sku_search"].text)
 
-        for item in self._items:
-            item["url"] = self._api_client.site_url(f"product/{item["id"]}")
+        if self._items:
+            for item in self._items:
+                item["url"] = self._api_client.site_url(
+                    f"product/{item["id"]}")
 
-        self.ids["item_list"].data = [self._list_data(item, i)
-                                      for i, item in enumerate(self._items)]
+            self.ids["item_list"].data = [
+                self._list_data(item, i)
+                for i, item in enumerate(self._items)]
+            self.ids["search_empty"].text = ""
+        else:
+            self.ids["item_list"].data = []
+            self.ids["search_empty"].text = "No results found!"
+
         self.ids["generate_button"].disabled = True
 
     def _list_data(self, item: dict, index: int) -> dict:

@@ -53,9 +53,16 @@
                 on_press: search_screen.refresh_items()
                 size_hint_x: None
 
+        Label:
+            id: search_empty
+            text: 'Search now!'
+            size_hint_y: None
+            height: 200 if self.text else 0
+
         SearchResults:
             id: item_list
             viewclass: 'SearchResult'
+
             SelectableRecycleBoxLayout:
                 default_size: None, dp(56)
                 default_size_hint: 1, None

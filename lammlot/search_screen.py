@@ -5,17 +5,19 @@ from kivy.uix.button import Button
 from kivy.factory import Factory
 
 from .lend_engine_client import LendEngineClient
-from .search_result import SearchResult, SearchResults
+from .search_result import SearchResult, SelectableRecycleBoxLayout
 from .config import get_config, save_config
 
 
 class SearchScreen(Screen):
     @property
     def selected_items(self) -> list[SearchResult]:
-        results: SearchResults = self.ids["item_list"]
-
         return [self._items[c.index]
-                for c in results.children[0].children if c.selected]
+                for c in self.item_list_container.children if c.selected]
+
+    @property
+    def item_list_container(self) -> SelectableRecycleBoxLayout:
+        return self.ids["item_list_container"]
 
     @property
     def sticker_size(self) -> list[int]:
@@ -60,16 +62,19 @@ class SearchScreen(Screen):
             for item in self._items:
                 item["url"] = self._api_client.site_url(
                     f"product/{item["id"]}")
+                item["selected"] = False
 
             self.ids["item_list"].data = [
-                self._list_data(item, i)
-                for i, item in enumerate(self._items)]
+                self._list_data(item, i) for i, item in enumerate(self._items)
+            ]
+
             self.ids["search_empty"].text = ""
+
         else:
             self.ids["item_list"].data = []
             self.ids["search_empty"].text = "No results found!"
 
-        self.ids["generate_button"].disabled = True
+        self.item_list_container.clear_selection()
 
     def _list_data(self, item: dict, index: int) -> dict:
         sku, name = item["sku"], item["name"]["en"]
@@ -125,4 +130,8 @@ class SearchScreen(Screen):
         self.manager.current = "sticker"
 
     def update_selected(self) -> None:
-        self.ids["generate_button"].disabled = not self.selected_items
+        selected_items = self.selected_items
+        self.ids["generate_button"].disabled = not selected_items
+        self.ids["select_all"].disabled = (
+            not self._items or len(selected_items) == len(self._items))
+        self.ids["select_none"].disabled = not selected_items

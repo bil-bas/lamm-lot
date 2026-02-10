@@ -53,17 +53,39 @@
                 on_press: search_screen.refresh_items()
                 size_hint_x: None
 
-        Label:
-            id: search_empty
-            text: 'Search now!'
-            size_hint_y: None
-            height: 100 if self.text else 0
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint: 1, None
+            height: 40
+
+            Label:
+                id: search_empty
+                text: 'Search now!'
+                size_hint_y: None
+                height: 100 if self.text else 0
+
+            Button:
+                id: select_all
+                text: "Select All"
+                on_press: item_list_container.select_all()
+                disabled: True
+                size_hint_x: None
+                width: 150
+
+            Button:
+                id: select_none
+                text: "Select None"
+                on_press: item_list_container.clear_selection()
+                disabled: True
+                size_hint_x: None
+                width: 150
 
         SearchResults:
             id: item_list
             viewclass: 'SearchResult'
 
             SelectableRecycleBoxLayout:
+                id: item_list_container
                 default_size: None, dp(56)
                 default_size_hint: 1, None
                 size_hint_y: None

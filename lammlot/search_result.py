@@ -10,7 +10,10 @@ from kivy.uix.boxlayout import BoxLayout
 
 class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
                                  RecycleBoxLayout):
-    pass
+    def select_all(self):
+        for widget in self.children:
+            result: SearchResult = widget
+            self.select_node(result.index)
 
 
 class SearchResults(RecycleView):
@@ -37,7 +40,8 @@ class SearchResult(RecycleDataViewBehavior, BoxLayout):
         if self.collide_point(*touch.pos) and self.selectable:
             return self.parent.select_with_touch(self.index, touch)
 
-    def apply_selection(self, rv, index, is_selected):
+    def apply_selection(self, rv: SearchResults, index: int,
+                        is_selected: bool):
         ''' Respond to the selection of items in the view. '''
         self.selected = is_selected
 

@@ -14,7 +14,8 @@
         orientation: 'vertical'
 
         StackLayout:
-            size_hint: 1, 0.05
+            size_hint: 1, None
+            height: 40
             spacing: 16
 
             Button:
@@ -31,22 +32,21 @@
 
                 Label:
                     text: 'SKU'
-                    text_size: self.size
                     halign: 'right'
-                    size_hint_x: None
+                    text_size: self.size
 
                 TextInput:
                     id: sku_search
-                    size_hint_x: None
+                    #size_hint_x: None
 
                 Label:
                     text: 'Title'
                     halign: 'right'
-                    size_hint_x: None
+                    text_size: self.size
 
                 TextInput:
                     id: name_search
-                    size_hint_x: None
+                    #size_hint_x: None
 
             Button:
                 text: 'Search'
@@ -57,7 +57,7 @@
             id: search_empty
             text: 'Search now!'
             size_hint_y: None
-            height: 200 if self.text else 0
+            height: 100 if self.text else 0
 
         SearchResults:
             id: item_list
@@ -73,8 +73,9 @@
                 touch_multiselect: True
 
         StackLayout:
-            size_hint: 1, 0.05
+            size_hint: 1, None
             spacing: 30
+            height: 40
 
             Label:
                 text: "Sticker size"

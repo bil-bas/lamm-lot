@@ -30,9 +30,15 @@ class SearchScreen(Screen):
         self._site: dict = {}
         self._items: list[dict] = []
         self._api_client = LendEngineClient()
-        self._add_size_buttons()
 
-        Clock.schedule_once(self.fetch_sites, 0.25)
+    def on_enter(self, *args) -> None:
+        super().on_enter(*args)
+
+        if not self._sites:
+            self._api_client.fetch_token()
+            self._api_client.fetch_sites()
+            self._add_size_buttons()
+            Clock.schedule_once(self.fetch_sites, 0.25)
 
     def _add_size_buttons(self, delay: float = 0.0):
         self.ids["sticker_size_buttons"].clear_widgets()

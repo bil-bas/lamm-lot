@@ -1,19 +1,22 @@
-import os
 import requests
 import urllib.parse as urlparse
 from pathlib import Path
 
-from .config import get_config
+from .config import get_config, get_secrets
 
 
 class LendEngineClient:
     ENV_TOKEN = "LEND_ENGINE_TOKEN"
+    API_FRAGMENT = "api/2/"
+    TOKEN_FRAGMENT = "token/refresh"
 
-    def __init__(self):
+    def fetch_token(self) -> None:
         response = requests.post(
-            self.api_url("token/refresh"),
-            data={"refresh_token": os.environ[self.ENV_TOKEN]},
+            self.api_url(self.TOKEN_FRAGMENT),
+            data={"refresh_token": get_secrets().lend_engine_token},
             verify=False)
+        print(response.content)
+        print(response.url)
         self._token = response.json()["token"]
 
     def site_url(self, relative_path: str) -> str:
@@ -21,7 +24,7 @@ class LendEngineClient:
                                 relative_path)
 
     def api_url(self, relative_path: str) -> str:
-        return urlparse.urljoin(get_config().lend_engine.api_url,
+        return urlparse.urljoin(self.site_url(self.API_FRAGMENT),
                                 relative_path)
 
     def _get_list(self, uri, **kwargs):

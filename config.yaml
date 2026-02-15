@@ -1,6 +1,5 @@
 lend_engine:
   site_url: https://lammlibrary.lend-engine-app.com
-  api_url: https://lammlibrary.lend-engine-app.com/api/2/
   image_url: https://s3-us-west-2.amazonaws.com/lend-engine/lammlibrary/large/
 options:
   sticker_sizes:

@@ -1,0 +1,28 @@
+#:kivy 2.3.1
+
+
+<HomeScreen>:
+    name: "home"
+
+    BoxLayout:
+        orientation: 'vertical'
+
+        Label:
+            text: "Lend-Engine Staff App (Unofficial)"
+            size_hint: 1, 0.05
+
+        Button:
+            text: "Items"
+            on_press: root.manager.current = "search"
+            size_hint: None, 0.05
+            width: 200
+
+        Button:
+            text: "Settings"
+            on_press: root.manager.current = "settings"
+            size_hint: None, 0.05
+            width: 200
+
+        Label:
+            text: "By Bil Bas (bil@lamm.space)"
+            valign: "bottom"

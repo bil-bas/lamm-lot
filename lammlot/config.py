@@ -13,3 +13,16 @@ def save_config():
 
 def config_path():
     return "./config.yaml"
+
+
+@cached(cache={})
+def get_secrets():
+    return OmegaConf.load(secrets_path())
+
+
+def save_secrets():
+    OmegaConf.save(get_secrets(), secrets_path())
+
+
+def secrets_path():
+    return "./secrets.yaml"

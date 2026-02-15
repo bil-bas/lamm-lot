@@ -209,3 +209,4 @@ __marimo__/
 images_cache/
 output/
 *.code-workspace
+secrets.yaml

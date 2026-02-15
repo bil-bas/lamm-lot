@@ -34,7 +34,7 @@ class SearchScreen(Screen):
 
         Clock.schedule_once(self.fetch_sites, 0.25)
 
-    def _add_size_buttons(self):
+    def _add_size_buttons(self, delay: float = 0.0):
         self.ids["sticker_size_buttons"].clear_widgets()
 
         for size in get_config().options.sticker_sizes:
@@ -47,10 +47,12 @@ class SearchScreen(Screen):
         get_config().options.current_sticker_size = list(size)
         save_config()
 
-    def fetch_sites(self, called_after: float = 0) -> None:
+    def fetch_sites(self, delay: float = 0.0) -> None:
+        sites = self.ids["site_picker"]
+
         self._sites = self._api_client.fetch_sites()
         self._site = self.find_site(get_config().options.current_site)
-        self.ids["site_picker"].text = self._site["name"]
+        sites.text = self._site["name"]
 
     def refresh_items(self) -> None:
         self._items = self._api_client.fetch_items(
@@ -69,7 +71,6 @@ class SearchScreen(Screen):
             ]
 
             self.ids["search_empty"].text = ""
-
         else:
             self.ids["item_list"].data = []
             self.ids["search_empty"].text = "No results found!"
@@ -111,12 +112,12 @@ class SearchScreen(Screen):
         self._items.clear()
         self.ids["item_list"].data.clear()
 
-        get_config().options.current_site = button.text
+        get_config().options.current_site = self._site["id"]
         save_config()
 
-    def find_site(self, name: str) -> dict:
+    def find_site(self, identifier: int | str) -> dict:
         for site in self._sites:
-            if site["name"] == name:
+            if site["id"] == identifier or site["name"] == identifier:
                 return site
 
         return self._sites[0]

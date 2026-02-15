@@ -5,13 +5,15 @@ An app for staff at [lend-engine](https://www.lend-engine.com/) sites that creat
 ## Features
 
 * search for items by site
-* select items to generate and save sticker images for, in multiple sizes
+* select items to generate and save sticker images for, in multiple common sizes
 * Supports python 3.13+ and (soon) executables for Android and Windows
-* Requires an API key from your Lend Engine site (Plus or Business level is needed)
+* Requires an API key from your Lend Engine site (Plus or Business level account is needed)
 
 ## Credits
 
 Created by Bil Bas at "BayShare - The Libraries of Things" (LoT group, for Morecambe Bay, that is not yet public).
+
+Support this project: https://ko-fi.com/bilbas
 
 ## Building
 

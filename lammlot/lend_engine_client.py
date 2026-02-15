@@ -52,7 +52,7 @@ class LendEngineClient:
     def _valid_item(self, item: dict, site: str) -> bool:
         return (item["isActive"] and
                 item["itemType"] == "loan" and
-                site in item["sites"])
+                site in [itemSite["site"] for itemSite in item["itemSites"]])
 
     def _fetch_image(self, filename: str) -> str:
         folder = Path("./images_cache")

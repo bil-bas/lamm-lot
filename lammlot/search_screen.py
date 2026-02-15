@@ -36,7 +36,6 @@ class SearchScreen(Screen):
 
         if not self._sites:
             self._api_client.fetch_token()
-            self._api_client.fetch_sites()
             self._add_size_buttons()
             Clock.schedule_once(self.fetch_sites, 0.25)
 

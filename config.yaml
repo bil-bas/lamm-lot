@@ -1,5 +1,5 @@
 lend_engine:
-  site_url: https://lammlibrary.lend-engine-app.com
+  site_url: https://things.bayshare.uk
   image_url: https://s3-us-west-2.amazonaws.com/lend-engine/lammlibrary/large/
 options:
   sticker_sizes:
@@ -17,4 +17,4 @@ options:
   current_site: 1
 stickers:
   show_site: true
-  organization: Part of BayShare - bayshare.org.uk
+  organization: Part of BayShare.uk

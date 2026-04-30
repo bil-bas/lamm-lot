@@ -15,9 +15,15 @@ class LendEngineClient:
             self.api_url(self.TOKEN_FRAGMENT),
             data={"refresh_token": get_secrets().lend_engine_token},
             verify=False)
-        print(response.content)
-        print(response.url)
-        self._token = response.json()["token"]
+
+        try:
+            self._token = response.json()["token"]
+        except KeyError:
+            print(response.json())
+            exit()
+        except Exception as ex:
+            print(type(ex))
+            exit()
 
     def site_url(self, relative_path: str) -> str:
         return urlparse.urljoin(get_config().lend_engine.site_url,

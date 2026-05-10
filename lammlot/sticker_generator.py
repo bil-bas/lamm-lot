@@ -58,14 +58,14 @@ class StickerGenerator:
         except (PermissionError, KeyError):
             return
 
-        size = image.height // 3
+        size = image.height // 2
         picture = picture.resize((size, size),
                                  resample=PILImage.Resampling.LANCZOS)
 
         if greyscale:
             picture = picture.convert("L")
 
-        left_margin = image.width // 2
+        left_margin = int(image.width * 0.4)
         top_margin = (image.height - picture.height) // 2
 
         image.paste(picture,

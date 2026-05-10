@@ -60,10 +60,11 @@ class SearchScreen(Screen):
         sites.text = self._site["name"]
 
     def refresh_items(self) -> None:
-        self._items = self._api_client.fetch_items(
+        items = self._api_client.fetch_items(
             site=self._site["@id"],
             name=self.ids["name_search"].text,
             sku=self.ids["sku_search"].text)
+        self._items = list(items)
 
         if self._items:
             for item in self._items:
@@ -75,7 +76,7 @@ class SearchScreen(Screen):
                 self._list_data(item, i) for i, item in enumerate(self._items)
             ]
 
-            self.ids["search_empty"].text = ""
+            self.ids["search_empty"].text = f"{len(self._items)} things found"
         else:
             self.ids["item_list"].data = []
             self.ids["search_empty"].text = "No results found!"
@@ -87,12 +88,15 @@ class SearchScreen(Screen):
 
         assert isinstance(item.get("image", ""), str)
 
+        fee = f"£{item["loanFee"] or '<unset>'} per day"
+        deposit = f" - deposit £{item['depositAmount']}" if item["depositAmount"] else ""
+
         return {
             "index": index,
             "image": item.get("image", ""),
             "title": f"[b]{sku}[/b] - {name}",
-            "description": item["description"]["en"] or "",
-            "loan_fee_": f"£{item["loanFee"]} per week",
+            "description": (item["description"]["en"] or "")[:80].replace("\n", "+"),
+            "loan_fee": f"{fee}{deposit}",
             "screen": self,
         }
 

@@ -1,6 +1,7 @@
 import requests
 import urllib.parse as urlparse
 from pathlib import Path
+from typing import Iterator
 
 from .config import get_config, get_secrets
 
@@ -45,15 +46,23 @@ class LendEngineClient:
         sites = self._get_list("sites")["hydra:member"]
         return [site for site in sites if site["isActive"]]
 
-    def fetch_items(self, site: str, name: str, sku: str) -> list[dict]:
-        params = {"name": name, "sku": sku}
-        items = self._get_list("items", params=params)["hydra:member"]
+    def fetch_items(self, site: str, name: str, sku: str) -> Iterator[dict]:
+        params = {"name": name, "sku": sku, "page": 1}
 
-        for item in items:
-            if item["imageName"]:
-                item["image"] = self._fetch_image(item["imageName"])
+        while True:
+            response = self._get_list("items", params=params)
+            items = response["hydra:member"]
 
-        return [item for item in items if self._valid_item(item, site)]
+            for item in items:
+                if self._valid_item(item, site):
+                    if item["imageName"]:
+                        item["image"] = self._fetch_image(item["imageName"])
+                    yield item
+
+            if "hydra:next" in response["hydra:view"]:
+                params["page"] += 1
+            else:
+                return
 
     def _valid_item(self, item: dict, site: str) -> bool:
         return (item["isActive"] and

@@ -53,16 +53,19 @@ class LendEngineClient:
             response = self._get_list("items", params=params)
             items = response["hydra:member"]
 
-            for item in items:
-                if self._valid_item(item, site):
-                    if item["imageName"]:
-                        item["image"] = self._fetch_image(item["imageName"])
-                    yield item
+            yield from self._valid_items(site, items)
 
             if "hydra:next" in response["hydra:view"]:
                 params["page"] += 1
             else:
                 return
+
+    def _valid_items(self, site: str, items: list[dict]) -> Iterator[dict]:
+        for item in items:
+            if self._valid_item(item, site):
+                if item["imageName"]:
+                    item["image"] = self._fetch_image(item["imageName"])
+                yield item
 
     def _valid_item(self, item: dict, site: str) -> bool:
         return (item["isActive"] and

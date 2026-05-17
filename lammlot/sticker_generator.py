@@ -63,7 +63,7 @@ class StickerGenerator:
                                  resample=PILImage.Resampling.LANCZOS)
 
         if greyscale:
-            picture = picture.convert("L")
+            picture = picture.convert("L").convert("1")
 
         left_margin = int(image.width * 0.4)
         top_margin = (image.height - picture.height) // 2

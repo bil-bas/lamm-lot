@@ -38,7 +38,7 @@ class StickerScreen(Screen):
         self.ids["stickers"].add_widget(image)
 
     def save_images(self):
-        stickers = self.ids["stickers"].children
+        stickers = reversed(self.ids["stickers"].children)
 
         # TODO: Show a folder save dialog, rather than using project folder.
         folder = Path(__file__).absolute().parent.parent / "output"

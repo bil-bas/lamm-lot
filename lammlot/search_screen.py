@@ -89,13 +89,18 @@ class SearchScreen(Screen):
         assert isinstance(item.get("image", ""), str)
 
         fee = f"£{item["loanFee"] or '<unset>'} per day"
-        deposit = f" - deposit £{item['depositAmount']}" if item["depositAmount"] else ""
+        if item["depositAmount"]:
+            deposit = f" - deposit £{item['depositAmount']}"
+        else:
+            deposit = ""
+
+        description = (item["description"]["en"] or "")[:80].replace("\n", "+")
 
         return {
             "index": index,
             "image": item.get("image", ""),
             "title": f"[b]{sku}[/b] - {name}",
-            "description": (item["description"]["en"] or "")[:80].replace("\n", "+"),
+            "description": description,
             "loan_fee": f"{fee}{deposit}",
             "screen": self,
         }

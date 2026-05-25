@@ -14,7 +14,8 @@ from .config import get_config
 class StickerGenerator:
     TEXT_COLOR = 0, 0, 0
     PAPER_COLOR = 255, 255, 255
-    MARGIN = mm_to_print_px(2)
+    MARGIN = mm_to_print_px(4)
+    PHOTO_SCALE = 5
 
     def __init__(self, item: dict, site: dict):
         self._item = item
@@ -26,7 +27,7 @@ class StickerGenerator:
                                     color=self.PAPER_COLOR)
 
         self._draw_barcode(image)
-        self._draw_picture(image)
+        self._draw_logo(image)
         self._draw_text(image)
         self._draw_qr_code(image)
 
@@ -52,19 +53,37 @@ class StickerGenerator:
                      self.MARGIN + qr_image.size[0],
                      top_margin + qr_image.size[1]))
 
+    def _draw_logo(self, image: Image) -> None:
+        picture = PILImage.open("images/bayshare_logo.png")
+
+        display_size = image.height // 2
+        picture = picture.resize((display_size, display_size))
+
+        left_margin = int(image.width * 0.4)
+        top_margin = (image.height - picture.height) // 2
+
+        image.paste(picture,
+                    (left_margin, top_margin,
+                     left_margin + picture.width, top_margin + picture.height))
+
     def _draw_picture(self, image: Image, greyscale: bool = True) -> None:
         try:
             picture = PILImage.open(self._item["image"])
         except (PermissionError, KeyError):
             return
 
-        size = image.height // 2
-        picture = picture.resize((size, size),
-                                 resample=PILImage.Resampling.LANCZOS)
+        display_size = image.height // 2
 
         if greyscale:
             # Greyscale and then dither.
-            picture = picture.convert("L").convert("1")
+            picture = picture.convert("L")
+            size = display_size // self.PHOTO_SCALE
+            picture = picture.resize((size, size),
+                                     resample=PILImage.Resampling.LANCZOS)
+            picture = picture.convert("1")
+
+        display_size = image.height // 2
+        picture = picture.resize((display_size, display_size))
 
         left_margin = int(image.width * 0.4)
         top_margin = (image.height - picture.height) // 2
@@ -74,11 +93,13 @@ class StickerGenerator:
                      left_margin + picture.width, top_margin + picture.height))
 
     def _draw_text(self, image: Image) -> None:
-        font_size_large = image.height / 16
+        font_size_title = image.height / 12
+        font_size_regular = image.height / 15
         font_size_small = image.height / 18
 
-        font_title = ImageFont.truetype("arial.ttf", size=font_size_large)
-        font_subtitle = ImageFont.truetype("arial.ttf", size=font_size_small)
+        font_title = ImageFont.truetype("arial.ttf", size=font_size_title)
+        font_regular = ImageFont.truetype("arial.ttf", size=font_size_regular)
+        font_small = ImageFont.truetype("arial.ttf", size=font_size_small)
 
         draw = ImageDraw.Draw(image)
 
@@ -87,15 +108,15 @@ class StickerGenerator:
                   self._item["name"]["en"], self.TEXT_COLOR, font_title)
 
         # Bottom text
-        if get_config().stickers.show_site:
-            y = image.height - font_size_large - font_size_small - self.MARGIN
-            draw.text((self.MARGIN, y),
-                      self._site["name"], self.TEXT_COLOR, font_title)
+        y = image.height - font_size_regular - font_size_small - self.MARGIN
+        name_and_code = f"{self._site["name"]} - {self._site["postCode"]}"
+        draw.text((self.MARGIN, y),
+                  name_and_code, self.TEXT_COLOR, font_regular)
 
         draw.text((self.MARGIN, image.height - font_size_small - self.MARGIN),
                   get_config().stickers.organization,
                   self.TEXT_COLOR,
-                  font_subtitle)
+                  font_small)
 
     def _draw_barcode(self, image: Image) -> None:
         barcode: Image = self._create_barcode(self._item["sku"])

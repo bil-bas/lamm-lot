@@ -14,12 +14,13 @@ from .config import get_config
 class StickerGenerator:
     TEXT_COLOR = 0, 0, 0
     PAPER_COLOR = 255, 255, 255
-    MARGIN = mm_to_print_px(4)
+    MARGIN = mm_to_print_px(2)
     PHOTO_SCALE = 5
 
-    def __init__(self, item: dict, site: dict):
+    def __init__(self, item: dict, site: dict, curved_surface: bool):
         self._item = item
         self._site = site
+        self._curved_surface = curved_surface
 
     def generate(self, size: list[int]) -> BytesIO:
         size_px = mm_to_print_px(size[0]), mm_to_print_px(size[1])
@@ -27,7 +28,8 @@ class StickerGenerator:
                                     color=self.PAPER_COLOR)
 
         self._draw_barcode(image)
-        self._draw_logo(image)
+        if image.height / image.width <= 5/8:
+            self._draw_logo(image)
         self._draw_text(image)
         self._draw_qr_code(image)
 
@@ -39,8 +41,10 @@ class StickerGenerator:
         return data
 
     def _draw_qr_code(self, image: Image) -> None:
+        box_size = image.height / (100 if self._curved_surface else 50)
+
         qr = qrcode.QRCode(version=1, error_correction=qrcode.ERROR_CORRECT_M,
-                           box_size=image.height / 60, border=0)
+                           box_size=box_size, border=0)
         qr.add_data(self._item["url"])
         qr.make(fit=True)
         qr_image = qr.make_image(fill_color=self.TEXT_COLOR,
@@ -93,9 +97,9 @@ class StickerGenerator:
                      left_margin + picture.width, top_margin + picture.height))
 
     def _draw_text(self, image: Image) -> None:
-        font_size_title = image.height / 12
-        font_size_regular = image.height / 15
-        font_size_small = image.height / 18
+        font_size_title = image.width / 20
+        font_size_regular = image.width / 20
+        font_size_small = image.width / 25
 
         font_title = ImageFont.truetype("arial.ttf", size=font_size_title)
         font_regular = ImageFont.truetype("arial.ttf", size=font_size_regular)
@@ -121,9 +125,14 @@ class StickerGenerator:
     def _draw_barcode(self, image: Image) -> None:
         barcode: Image = self._create_barcode(self._item["sku"])
         barcode: Image = barcode.transpose(PILImage.Transpose.ROTATE_90)
+        aspect_ratio = barcode.width / barcode.height
+
+        barcode = barcode.resize((round(image.height * aspect_ratio),
+                                  image.height),
+                                 resample=PILImage.Resampling.LANCZOS)
+
         image.paste(barcode,
-                    (image.width - barcode.width,
-                     (image.height - barcode.height) // 2))
+                    (image.width - barcode.width, 0))
 
     def _create_barcode(self, sku: str) -> Image:
         data = BytesIO()

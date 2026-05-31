@@ -3,6 +3,7 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.dropdown import DropDown
 from kivy.uix.button import Button
 from kivy.factory import Factory
+from kivy.properties import BooleanProperty
 
 from .lend_engine_client import LendEngineClient
 from .search_result import SearchResult, SelectableRecycleBoxLayout
@@ -10,6 +11,8 @@ from .config import get_config, save_config
 
 
 class SearchScreen(Screen):
+    curved_surface = BooleanProperty(False)
+
     @property
     def selected_items(self) -> list[SearchResult]:
         return [self._items[c.index]
@@ -141,6 +144,7 @@ class SearchScreen(Screen):
         screen.sticker_size = self.sticker_size
         screen.selected = self.selected_items
         screen.site = self._site
+        screen.curved_surface = self.curved_surface
 
         self.manager.current = "sticker"
 

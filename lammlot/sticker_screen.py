@@ -5,7 +5,7 @@ from sanitize_filename.sanitize_filename import sanitize
 from kivy.uix.screenmanager import Screen
 from kivy.uix.image import Image, CoreImage
 from kivy.factory import Factory
-from kivy.properties import ListProperty, DictProperty
+from kivy.properties import ListProperty, DictProperty, BooleanProperty
 
 from .sticker_generator import StickerGenerator
 from .utils import mm_to_screen_px
@@ -15,10 +15,12 @@ class StickerScreen(Screen):
     selected = ListProperty()
     site = DictProperty()
     sticker_size = ListProperty()
+    curved_surface = BooleanProperty()
 
     def on_pre_enter(self, *args) -> None:
         for item in self.selected:
-            generator = StickerGenerator(item=item, site=self.site)
+            generator = StickerGenerator(item=item, site=self.site,
+                                         curved_surface=self.curved_surface)
             self._add_sticker(generator)
 
     def on_leave(self, *args):

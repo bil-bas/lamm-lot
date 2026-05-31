@@ -107,6 +107,14 @@
                 size_hint_x: None
                 width: len(self.children) * 150
 
+            ToggleButton:
+                id: curved_button
+                size_hint_x: None
+                width: 150
+                text: 'Curved?'
+                state: "down" if search_screen.curved_surface else "normal"
+                on_press: search_screen.curved_surface = not search_screen.curved_surface
+
             Button:
                 id: generate_button
                 size_hint_x: None

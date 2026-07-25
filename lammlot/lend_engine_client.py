@@ -3,6 +3,7 @@ import urllib.parse as urlparse
 from pathlib import Path
 from typing import Iterator
 
+from .item import Item
 from .config import get_config, get_secrets
 
 
@@ -46,31 +47,27 @@ class LendEngineClient:
         sites = self._get_list("sites")["hydra:member"]
         return [site for site in sites if site["isActive"]]
 
-    def fetch_items(self, site: str, name: str, sku: str) -> Iterator[dict]:
+    def fetch_items(self, site: str, name: str, sku: str) -> Iterator[Item]:
         params = {"name": name, "sku": sku, "page": 1}
 
         while True:
             response = self._get_list("items", params=params)
             items = response["hydra:member"]
 
-            yield from self._valid_items(site, items)
+            yield from self._loan_items(site, items)
 
             if "hydra:next" in response["hydra:view"]:
                 params["page"] += 1
             else:
                 return
 
-    def _valid_items(self, site: str, items: list[dict]) -> Iterator[dict]:
-        for item in items:
-            if self._valid_item(item, site):
-                if item["imageName"]:
-                    item["image"] = self._fetch_image(item["imageName"])
+    def _loan_items(self, site: str, items: list[dict]) -> Iterator[Item]:
+        for data in items:
+            item = Item(data)
+            if item.is_valid and site in item.sites:
+                if item.image_name:
+                    item.image = self._fetch_image(item.image_name)
                 yield item
-
-    def _valid_item(self, item: dict, site: str) -> bool:
-        return (item["isActive"] and
-                item["itemType"] == "loan" and
-                site in [itemSite["site"] for itemSite in item["itemSites"]])
 
     def _fetch_image(self, filename: str) -> str:
         folder = Path("./images_cache")

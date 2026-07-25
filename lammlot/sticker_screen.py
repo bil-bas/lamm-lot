@@ -48,7 +48,7 @@ class StickerScreen(Screen):
         folder.mkdir(parents=True, exist_ok=True)
 
         for sticker, item in zip(stickers, self.selected):
-            filename = sanitize(f"{item["sku"]}-{item["name"]["en"][:40]}.png")
+            filename = sanitize(f"{item.sku}-{item.name[:40]}.png")
             sticker.texture.save(str(folder / filename), flipped=False)
 
         self.manager.current = "search"

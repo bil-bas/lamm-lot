@@ -9,6 +9,7 @@ import qrcode
 
 from .utils import mm_to_print_px, DPI_PRINT_QUALITY
 from .config import get_config
+from .item import Item
 
 
 class StickerGenerator:
@@ -17,7 +18,7 @@ class StickerGenerator:
     MARGIN = mm_to_print_px(2)
     PHOTO_SCALE = 5
 
-    def __init__(self, item: dict, site: dict, curved_surface: bool):
+    def __init__(self, item: Item, site: dict, curved_surface: bool):
         self._item = item
         self._site = site
         self._curved_surface = curved_surface
@@ -45,7 +46,7 @@ class StickerGenerator:
 
         qr = qrcode.QRCode(version=1, error_correction=qrcode.ERROR_CORRECT_M,
                            box_size=box_size, border=0)
-        qr.add_data(self._item["url"])
+        qr.add_data(self._item.url)
         qr.make(fit=True)
         qr_image = qr.make_image(fill_color=self.TEXT_COLOR,
                                  back_color=self.PAPER_COLOR).get_image()
@@ -72,7 +73,7 @@ class StickerGenerator:
 
     def _draw_picture(self, image: Image, greyscale: bool = True) -> None:
         try:
-            picture = PILImage.open(self._item["image"])
+            picture = PILImage.open(self._item.image)
         except (PermissionError, KeyError):
             return
 
@@ -109,7 +110,7 @@ class StickerGenerator:
 
         # Top Text
         draw.text((self.MARGIN, self.MARGIN),
-                  self._item["name"]["en"], self.TEXT_COLOR, font_title)
+                  self._item.name, self.TEXT_COLOR, font_title)
 
         # Bottom text
         y = image.height - font_size_regular - font_size_small - self.MARGIN
@@ -123,7 +124,7 @@ class StickerGenerator:
                   font_small)
 
     def _draw_barcode(self, image: Image) -> None:
-        barcode: Image = self._create_barcode(self._item["sku"])
+        barcode: Image = self._create_barcode(self._item.sku)
         barcode: Image = barcode.transpose(PILImage.Transpose.ROTATE_90)
         aspect_ratio = barcode.width / barcode.height
 

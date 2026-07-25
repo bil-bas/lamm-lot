@@ -8,6 +8,7 @@ from kivy.properties import BooleanProperty
 from .lend_engine_client import LendEngineClient
 from .search_result import SearchResult, SelectableRecycleBoxLayout
 from .config import get_config, save_config
+from .item import Item
 
 
 class SearchScreen(Screen):
@@ -31,7 +32,7 @@ class SearchScreen(Screen):
 
         self._sites: list[dict] = []
         self._site: dict = {}
-        self._items: list[dict] = []
+        self._items: list[Item] = []
         self._api_client = LendEngineClient()
 
     def on_enter(self, *args) -> None:
@@ -71,9 +72,8 @@ class SearchScreen(Screen):
 
         if self._items:
             for item in self._items:
-                item["url"] = self._api_client.site_url(
-                    f"product/{item["id"]}")
-                item["selected"] = False
+                item.url = self._api_client.site_url(f"product/{item.id}")
+                item.deselect()
 
             self.ids["item_list"].data = [
                 self._list_data(item, i) for i, item in enumerate(self._items)
@@ -86,23 +86,19 @@ class SearchScreen(Screen):
 
         self.item_list_container.clear_selection()
 
-    def _list_data(self, item: dict, index: int) -> dict:
-        sku, name = item["sku"], item["name"]["en"]
-
-        assert isinstance(item.get("image", ""), str)
-
-        fee = f"£{item["loanFee"] or '<unset>'} per day"
-        if item["depositAmount"]:
-            deposit = f" - deposit £{item['depositAmount']}"
+    def _list_data(self, item: Item, index: int) -> dict:
+        fee = f"£{item.loan_fee or '<unset>'} per day"
+        if item.deposit_amount:
+            deposit = f" - deposit £{item.deposit_amount}"
         else:
             deposit = ""
 
-        description = (item["description"]["en"] or "")[:80].replace("\n", "+")
+        description = (item.description or "")[:80].replace("\n", "+")
 
         return {
             "index": index,
-            "image": item.get("image", ""),
-            "title": f"[b]{sku}[/b] - {name}",
+            "image": item.image,
+            "title": f"[b]{item.sku}[/b] - {item.name}",
             "description": description,
             "loan_fee": f"{fee}{deposit}",
             "screen": self,

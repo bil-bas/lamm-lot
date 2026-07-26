@@ -6,21 +6,22 @@ _log = Logger(__name__)
 SITES = {
     "lm": "Lancaster Makerspace",
     "ha": "Halton",
+    "ll": "Lancaster Central Library",
 }
 
 CATEGORIES = {
     "anc": "Art & Craft",
     "edc": "Education",
-    "mne": "Music & Entertainment",
-    "trn": "Transport",
-    "spr": "Sport",
-    "otd": "Outdoor pursuits",
     "env": "Environment",
     "diy": "DIY",
-    "pne": "Parties & events",
-    "hsh": "Household",
     "grd": "Garden",
-    "tng": "Toys & games"
+    "hsh": "Household",
+    "mne": "Music & Entertainment",
+    "otd": "Outdoor pursuits",
+    "pne": "Parties & events",
+    "spr": "Sport",
+    "tng": "Toys & games",
+    "trn": "Transport",
 }
 
 
@@ -98,8 +99,9 @@ class Item:
     def _check(self) -> None:
         self._check_sku()
 
-        self._assert_not_in("priceSell", {0, "", None})
-        self._assert_not_in("loanFee", {0, "", None})
+        self._assert_not_in("priceSell", {0, None})
+        self._assert_not_in("loanFee", {0, None})
+        self._assert(repr(self._data['description']['en']))
 
         if self._data["priceSell"]:
             fee_multiplier = 0.75
@@ -120,7 +122,7 @@ class Item:
     def _assert(self, condition: str):
         if eval(condition):
             return
-        _log.warning(f"{self} ({condition}) is False")
+        _log.warning(f"{self} ({condition}) is Falsey")
 
     def _assert_in(self, key: str, values: list):
         if self._data[key] in values:
